@@ -100,18 +100,18 @@ namespace fallguyloadr
 
             GameObject selectionsCollumn = UIFactory.CreateVerticalGroup(ContentRoot, "", false, false, true, true, 5, new Vector4(5, 5, 5, 5), new Color(0.07f, 0.07f, 0.07f, 1));
 
-            presetColourText = UIFactory.CreateLabel(selectionsCollumn, "Preset Colour Text", "");
-            presetPatternText = UIFactory.CreateLabel(selectionsCollumn, "Preset Pattern Text", "");
-            presetFaceplateText = UIFactory.CreateLabel(selectionsCollumn, "Preset Faceplate Text", "");
-            presetUpperText = UIFactory.CreateLabel(selectionsCollumn, "Preset Upper Text", "");
-            presetLowerText = UIFactory.CreateLabel(selectionsCollumn, "Preset Lower Text", "");
-            presetEmote1Text = UIFactory.CreateLabel(selectionsCollumn, "Preset Emote 1 Text", "");
-            presetEmote2Text = UIFactory.CreateLabel(selectionsCollumn, "Preset Emote 2 Text", "");
-            presetEmote3Text = UIFactory.CreateLabel(selectionsCollumn, "Preset Emote 3 Text", "");
-            presetEmote4Text = UIFactory.CreateLabel(selectionsCollumn, "Preset Emote 4 Text", "");
-            presetCelebrationText = UIFactory.CreateLabel(selectionsCollumn, "Preset Celebration Text", "");
+            presetColourText = UIFactory.CreateLabel(selectionsCollumn, "Preset Colour Text", "Colour: ");
+            presetPatternText = UIFactory.CreateLabel(selectionsCollumn, "Preset Pattern Text", "Pattern: ");
+            presetFaceplateText = UIFactory.CreateLabel(selectionsCollumn, "Preset Faceplate Text", "Faceplate: ");
+            presetUpperText = UIFactory.CreateLabel(selectionsCollumn, "Preset Upper Text", "Upper Costume: ");
+            presetLowerText = UIFactory.CreateLabel(selectionsCollumn, "Preset Lower Text", "Lower Costume: ");
+            presetEmote1Text = UIFactory.CreateLabel(selectionsCollumn, "Preset Emote 1 Text", "Emote 1: ");
+            presetEmote2Text = UIFactory.CreateLabel(selectionsCollumn, "Preset Emote 2 Text", "Emote 2: ");
+            presetEmote3Text = UIFactory.CreateLabel(selectionsCollumn, "Preset Emote 3 Text", "Emote 3: ");
+            presetEmote4Text = UIFactory.CreateLabel(selectionsCollumn, "Preset Emote 4 Text", "Emote 4: ");
+            presetCelebrationText = UIFactory.CreateLabel(selectionsCollumn, "Preset Celebration Text", "Victory Celebration: ");
 
-            SelectPreset(new SkinPreset(), "");
+            //SelectPreset(new SkinPreset(), "");
             SetCostumeOptions();
         }
 
@@ -254,17 +254,16 @@ namespace fallguyloadr
         {
             currentPreset = skinPreset;
 
-            // TODO: Add the actual names of the skins
-            presetColourText.text = $"Colour: {currentPreset.Colour}";
-            presetPatternText.text = $"Pattern: {currentPreset.Pattern}";
-            presetFaceplateText.text = $"Faceplate: {currentPreset.Faceplate}";
-            presetUpperText.text = $"Upper Costume: {currentPreset.Upper}";
-            presetLowerText.text = $"Lower Costume: {currentPreset.Lower}";
-            presetEmote1Text.text = $"Emote 1: {currentPreset.Emote1}";
-            presetEmote2Text.text = $"Emote 2: {currentPreset.Emote2}";
-            presetEmote3Text.text = $"Emote 3: {currentPreset.Emote3}";
-            presetEmote4Text.text = $"Emote 4: {currentPreset.Emote4}";
-            presetCelebrationText.text = $"Victory Celebrarion: {currentPreset.Celebration}";
+            presetColourText.text = $"Colour: {ColourOptions[currentPreset.Colour].DisplayName} <color=#666666><i>{currentPreset.Colour}</i></color>";
+            presetPatternText.text = $"Pattern: {PatternOptions[currentPreset.Pattern].DisplayName} <color=#666666><i>{currentPreset.Pattern}</i></color>";
+            presetFaceplateText.text = $"Faceplate: {FaceplateOptions[currentPreset.Faceplate].DisplayName} <color=#666666><i>{currentPreset.Faceplate}</i></color>";
+            presetUpperText.text = $"Upper Costume: {CostumeOptions[currentPreset.Upper].DisplayName} <color=#666666><i>{currentPreset.Upper}</i></color>";
+            presetLowerText.text = $"Lower Costume: {CostumeOptions[currentPreset.Lower].DisplayName} <color=#666666><i>{currentPreset.Lower}</i></color>";
+            presetEmote1Text.text = $"Emote 1: {EmoteOptions[currentPreset.Emote1].DisplayName} <color=#666666><i>{currentPreset.Emote1}</i></color>";
+            presetEmote2Text.text = $"Emote 2: {EmoteOptions[currentPreset.Emote2].DisplayName} <color=#666666><i>{currentPreset.Emote2}</i></color>";
+            presetEmote3Text.text = $"Emote 3: {EmoteOptions[currentPreset.Emote3].DisplayName} <color=#666666><i>{currentPreset.Emote3}</i></color>";
+            presetEmote4Text.text = $"Emote 4: {EmoteOptions[currentPreset.Emote4].DisplayName} <color=#666666><i>{currentPreset.Emote4}</i></color>";
+            presetCelebrationText.text = $"Victory Celebrarion: {CelebrationOptions[currentPreset.Celebration].DisplayName} <color=#666666><i>{currentPreset.Celebration}</i></color>";
 
             currentPresetName = name;
 
