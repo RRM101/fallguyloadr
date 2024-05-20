@@ -1,0 +1,129 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <AssemblyName>fallguyloadr</AssemblyName>
+    <Description>fallguyloadr</Description>
+    <Version>1.0.0</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <RestoreAdditionalProjectSources>
+      https://api.nuget.org/v3/index.json;
+      https://nuget.bepinex.dev/v3/index.json;
+      https://nuget.samboy.dev/v3/index.json
+    </RestoreAdditionalProjectSources>
+    <RootNamespace>fallguyloadr</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Core" Version="6.0.0-be.*" />
+    <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\core\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>D:\Downloads\lol\FallGuysSS4.8ModdingCopy\BepInEx\interop\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Catapult.Modules.Items.Protocol">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\Catapult.Modules.Items.Protocol.dll</HintPath>
+    </Reference>
+    <Reference Include="Catapult.Protocol">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\Catapult.Protocol.dll</HintPath>
+    </Reference>
+    <Reference Include="CMS_Runtime">
+      <HintPath>D:\Downloads\lol\FallGuysSS4.8ModdingCopy\BepInEx\interop\CMS_Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="DOTween">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\DOTween.dll</HintPath>
+    </Reference>
+    <Reference Include="FallGuys.Player.Protocol.Client">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\FallGuys.Player.Protocol.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="FMODUnity">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepinEx\interop\FMODUnity.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2Cppmscorlib">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepinEx\interop\Il2Cppmscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppSystem">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\Il2CppSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppSystem.Core">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\Il2CppSystem.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppSystem.Xml">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\Il2CppSystem.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppSystem.Xml.Linq">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\Il2CppSystem.Xml.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="MT.FGClient">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepinEx\interop\MT.FGClient.dll</HintPath>
+    </Reference>
+    <Reference Include="mvvmbindings">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepinEx\interop\mvvmbindings.dll</HintPath>
+    </Reference>
+    <Reference Include="ParsingUtils_Runtime">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\ParsingUtils_Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Rewired_Core">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepinEx\interop\Rewired_Core.dll</HintPath>
+    </Reference>
+    <Reference Include="TheMultiplayerGuys.FGCommon">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepinEx\interop\TheMultiplayerGuys.FGCommon.dll</HintPath>
+    </Reference>
+    <Reference Include="TheMultiplayerGuys.Utility">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepinEx\interop\TheMultiplayerGuys.Utility.dll</HintPath>
+    </Reference>
+    <Reference Include="TonicSoundsFMOD">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\TonicSoundsFMOD.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Addressables">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\Unity.Addressables.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ResourceManager">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\Unity.ResourceManager.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>D:\Downloads\lol\FallGuysSS4.8ModdingCopy\BepInEx\interop\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepinEx\interop\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepinEx\interop\UnityEngine.AssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepinEx\interop\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepinEx\interop\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepinEx\interop\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepinEx\interop\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UniverseLib.IL2CPP.Interop">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\plugins\sinai-dev-UnityExplorer\UniverseLib.IL2CPP.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="Wushu.LevelEditor.Runtime">
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepinEx\interop\Wushu.LevelEditor.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Fixes\" />
+  </ItemGroup>
+</Project>
