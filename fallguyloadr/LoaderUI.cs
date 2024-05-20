@@ -85,16 +85,16 @@ namespace fallguyloadr
 
             UIFactory.CreateDropdown(dropdownRow, "Rounds", out Dropdown dropdown, "", 14, RoundSelected);
             dropdown.AddOptions(rounds);
-            UIFactory.SetLayoutElement(dropdown.gameObject, minHeight: 25, minWidth: 400, flexibleWidth: 0, flexibleHeight: 0);
+            UIFactory.SetLayoutElement(dropdown.gameObject, minHeight: 25, minWidth: 390, flexibleWidth: 0, flexibleHeight: 0);
 
             UIFactory.CreateDropdown(dropdownRow, "Round Variation", out roundVariationDropdown, "", 14, VariationSelected);
             roundVariationDropdown.options.Add(new Dropdown.OptionData("Choose a Variation"));
-            UIFactory.SetLayoutElement(roundVariationDropdown.gameObject, minHeight: 25, minWidth: 400, flexibleWidth: 0, flexibleHeight: 0);
+            UIFactory.SetLayoutElement(roundVariationDropdown.gameObject, minHeight: 25, minWidth: 390, flexibleWidth: 0, flexibleHeight: 0);
 
             GameObject buttonRow = UIFactory.CreateHorizontalGroup(ContentRoot, "Buttons", true, false, true, true, 4, bgColor: new Color(0.07f, 0.07f, 0.07f, 1));
 
             ButtonRef loadRoundButton = UIFactory.CreateButton(buttonRow, "Load Round Button", "Load Round");
-            UIFactory.SetLayoutElement(loadRoundButton.Component.gameObject, minHeight: 25, minWidth: 266, flexibleWidth: 0, flexibleHeight: 0);
+            UIFactory.SetLayoutElement(loadRoundButton.Component.gameObject, minHeight: 25, minWidth: 250, flexibleWidth: 0, flexibleHeight: 0);
             loadRoundButton.OnClick += () =>
             {
                 if (variationsForSelectedRound != null)
@@ -104,11 +104,11 @@ namespace fallguyloadr
             };
 
             ButtonRef skinPresetsButton = UIFactory.CreateButton(buttonRow, "Skin Presets Button", "Skin Presets");
-            UIFactory.SetLayoutElement(skinPresetsButton.Component.gameObject, minHeight: 25, minWidth: 266, flexibleWidth: 0, flexibleHeight: 0);
+            UIFactory.SetLayoutElement(skinPresetsButton.Component.gameObject, minHeight: 25, minWidth: 250, flexibleWidth: 0, flexibleHeight: 0);
             skinPresetsButton.OnClick += SkinPresetsUI.instance.Toggle;
 
             ButtonRef loadRandomRoundButton = UIFactory.CreateButton(buttonRow, "Load Random Round Button", "Load Random Round");
-            UIFactory.SetLayoutElement(loadRandomRoundButton.Component.gameObject, minHeight: 25, minWidth: 266, flexibleWidth: 0, flexibleHeight: 0);
+            UIFactory.SetLayoutElement(loadRandomRoundButton.Component.gameObject, minHeight: 25, minWidth: 250, flexibleWidth: 0, flexibleHeight: 0);
             loadRandomRoundButton.OnClick += LoadRandomRound;
         }
 
@@ -168,7 +168,7 @@ namespace fallguyloadr
             selectedVariationIndex = variationIndex;
         }
 
-        void LoadRandomRound()
+        public void LoadRandomRound()
         {
             int randomRoundIndex = UnityEngine.Random.Range(0, usableRounds.Count);
             LoaderBehaviour.instance.LoadRound(usableRounds[randomRoundIndex]);

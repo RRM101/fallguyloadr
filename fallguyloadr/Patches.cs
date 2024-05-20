@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using FG.Common;
+using FG.Common.Character;
 using FG.Common.CMS;
 using FGClient;
 using FGClient.CatapultServices;
@@ -184,6 +185,13 @@ namespace fallguyloadr
         {
             __result = $"{Paths.PluginPath}/fallguyloadr/Assets/{filename}.gdata";
             return false;
+        }
+
+        [HarmonyPatch(typeof(MotorFunctionPortalStateActive), "End")]
+        [HarmonyPostfix]
+        static void MotorFunctionPortalStateActive(MotorFunctionPortalStateActive __instance)
+        {
+            __instance._motorFunctionPortal.ClearFailSafe();
         }
     }
 }

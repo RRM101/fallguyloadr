@@ -8,6 +8,10 @@ using Levels.PixelPerfect;
 using Levels.Progression;
 using UnityEngine;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
+using FGClient;
+using FGClient.UI;
+using System;
+using Levels.ScoreZone;
 
 namespace fallguyloadr
 {
@@ -16,6 +20,7 @@ namespace fallguyloadr
         MotorAgent motorAgent;
         MPGNetObject netObject;
         CheckpointManager checkpointManager;
+        bool qualified;
 
         void Start()
         {
@@ -44,12 +49,27 @@ namespace fallguyloadr
         void OnTriggerEnter(Collider other)
         {
             BinaryPixel binaryPixel = other.gameObject.GetComponentInParent<BinaryPixel>();
+            EndZoneVFXTrigger endZoneVFXTrigger = other.gameObject.GetComponent<EndZoneVFXTrigger>();
+            COMMON_ObjectiveReachEndZone objectiveReachEndZone = other.gameObject.GetComponent<COMMON_ObjectiveReachEndZone>();
+            SpawnableCollectable collectable = other.gameObject.GetComponentInParent<SpawnableCollectable>();
+
             if (binaryPixel != null)
             {
                 GameObject pixelPerfectBoard_object = binaryPixel.gameObject.transform.parent.parent.parent.parent.parent.gameObject;
                 PixelPerfectBoard pixelPerfectBoard = pixelPerfectBoard_object.GetComponent<PixelPerfectBoard>();
                 pixelPerfectBoard.ReceiveInput(binaryPixel.Index, netObject);
-            }            
+            }
+
+            if ((endZoneVFXTrigger != null || objectiveReachEndZone != null) && !qualified)
+            {
+                qualified = true;
+                Qualify();
+            }
+
+            if (collectable != null)
+            {
+                collectable.Collect();
+            }
         }
 
         void OnCollisionEnter(Collision collision)
@@ -69,9 +89,26 @@ namespace fallguyloadr
 
         IEnumerator RespawnTile(COMMON_RespawningTile respawningTile)
         {
-            float multiplier = ((respawningTile._brokenStateTimeScaler != null && respawningTile._brokenStateTimeScaler.enabled) ? respawningTile._brokenStateTimeScaler.FixedUpdateScalar : 1f);
+            float multiplier = (respawningTile._brokenStateTimeScaler != null && respawningTile._brokenStateTimeScaler.enabled) ? respawningTile._brokenStateTimeScaler.FixedUpdateScalar : 1f;
             yield return new WaitForSeconds(respawningTile._brokenDuration * multiplier);
             respawningTile.OnTriggerRespawnRoutine();
+        }
+
+        void Qualify()
+        {
+            Action action = RoundOver;
+
+            GlobalGameStateClient.Instance.GameStateView.GetLiveClientGameManager(out ClientGameManager cgm);
+            cgm._musicInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            QualifiedScreenViewModel.Show("Qualified", action);
+            AudioManager.PlayGameplayEndAudio(true);
+        }
+
+        void RoundOver()
+        {
+            Action action = LoaderUI.instance.LoadRandomRound;
+            RoundEndedScreenViewModel.Show(action);
+            AudioManager.PlayOneShot(AudioManager.EventMasterData.RoundOver);
         }
     }
 }
