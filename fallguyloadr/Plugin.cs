@@ -135,7 +135,8 @@ namespace fallguyloadr
                         }
                     }
 
-                    MultiplayerStartingPosition startingPosition = FindObjectOfType<MultiplayerStartingPosition>();
+                    MultiplayerStartingPosition[] startingPositions = FindObjectsOfType<MultiplayerStartingPosition>();
+                    MultiplayerStartingPosition startingPosition = startingPositions[UnityEngine.Random.Range(0, startingPositions.Length)];
 
                     fallguy.gameObject.AddComponent<FallGuyBehaviour>();
 
@@ -379,7 +380,8 @@ namespace fallguyloadr
 
             void RespawnAtStart()
             {
-                MultiplayerStartingPosition startingPosition = FindObjectOfType<MultiplayerStartingPosition>();
+                MultiplayerStartingPosition[] startingPositions = FindObjectsOfType<MultiplayerStartingPosition>();
+                MultiplayerStartingPosition startingPosition = startingPositions[UnityEngine.Random.Range(0, startingPositions.Length)];
                 position = startingPosition.transform.position;
                 rotation = startingPosition.transform.rotation;
             }
