@@ -119,7 +119,7 @@ namespace fallguyloadr
 
         public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (!scene.name.Contains("Fraggle") || !scene.name.Contains("Editor"))
+            if (!(scene.name.Contains("Fraggle") || scene.name.Contains("Editor")))
             {
                 if (scene.name.StartsWith("FallGuy_"))
                 {
