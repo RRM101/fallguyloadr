@@ -1,5 +1,5 @@
 # fallguyloadr
 
-a loader for the last good version of Fall Guys (v10.8.1)
+a loader for Fall Guys v10.8.1
 
 
