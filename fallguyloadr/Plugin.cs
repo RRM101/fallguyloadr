@@ -30,7 +30,7 @@ namespace fallguyloadr
     [BepInPlugin("org.rrm1.fallguyloadr", "fallguyloadr", version)]
     public class Plugin : BasePlugin
     {
-        public const string version = "0.9.2";
+        public const string version = "1.0.0";
 
         public override void Load()
         {

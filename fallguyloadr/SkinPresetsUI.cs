@@ -286,24 +286,27 @@ namespace fallguyloadr
 
         void EquipSelectedPreset()
         {
-            CustomisationSelections selections = GlobalGameStateClient.Instance.PlayerProfile.CustomisationSelections;
-
-            selections.ColourOption = ColourOptions[currentPreset.Colour];
-            selections.PatternOption = PatternOptions[currentPreset.Pattern];
-            selections.FaceplateOption = FaceplateOptions[currentPreset.Faceplate];
-            selections.CostumeTopOption = CostumeOptions[currentPreset.Upper];
-            selections.CostumeBottomOption = CostumeOptions[currentPreset.Lower];
-            selections.EmoteTopOption = EmoteOptions[currentPreset.Emote1];
-            selections.EmoteRightOption = EmoteOptions[currentPreset.Emote2];
-            selections.EmoteBottomOption = EmoteOptions[currentPreset.Emote3];
-            selections.EmoteLeftOption = EmoteOptions[currentPreset.Emote4];
-            selections.VictoryPoseOption = CelebrationOptions[currentPreset.Celebration];
-
-            MainMenuManager mainMenuManager = GameObject.FindObjectOfType<MainMenuManager>();
-
-            if (mainMenuManager != null)
+            if (currentPreset != null)
             {
-                mainMenuManager.ApplyOutfit();
+                CustomisationSelections selections = GlobalGameStateClient.Instance.PlayerProfile.CustomisationSelections;
+
+                selections.ColourOption = ColourOptions[currentPreset.Colour];
+                selections.PatternOption = PatternOptions[currentPreset.Pattern];
+                selections.FaceplateOption = FaceplateOptions[currentPreset.Faceplate];
+                selections.CostumeTopOption = CostumeOptions[currentPreset.Upper];
+                selections.CostumeBottomOption = CostumeOptions[currentPreset.Lower];
+                selections.EmoteTopOption = EmoteOptions[currentPreset.Emote1];
+                selections.EmoteRightOption = EmoteOptions[currentPreset.Emote2];
+                selections.EmoteBottomOption = EmoteOptions[currentPreset.Emote3];
+                selections.EmoteLeftOption = EmoteOptions[currentPreset.Emote4];
+                selections.VictoryPoseOption = CelebrationOptions[currentPreset.Celebration];
+
+                MainMenuManager mainMenuManager = GameObject.FindObjectOfType<MainMenuManager>();
+
+                if (mainMenuManager != null)
+                {
+                    mainMenuManager.ApplyOutfit();
+                }
             }
         }
     }
