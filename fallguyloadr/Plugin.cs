@@ -440,6 +440,8 @@ namespace fallguyloadr
 
         IEnumerator LoginRoutine()
         {
+            LoaderBehaviour.instance.canLoadLevel = true;
+
             if (CMSLoader.Instance.CMSData == null)
             {
                 PlayerTargetSettings.HardCurrencyEnabled = true;
@@ -455,6 +457,10 @@ namespace fallguyloadr
             }
             catch { }
             FindObjectOfType<MainMenuManager>().ApplyOutfit();
+
+            PlayerDetailsService playerDetailsService = PlatformServices.Current.PlayerDetailsService.Cast<PlayerDetailsService>();
+            PlayerDetailsService.PlayerDetails playerDetails = new PlayerDetailsService.PlayerDetails(PlayerDetailsService.NameSource.InGame, false, "win", GlobalGameStateClient.Instance.GetLocalPlayerName(), GlobalGameStateClient.Instance.GetLocalPlayerName(), PlayerNameType.PlatformAccountName, false);
+            playerDetailsService._playerDict.Add(GlobalGameStateClient.Instance.GetLocalPlayerKey(), playerDetails);
         }
 
         void LoadCustomisations()

@@ -292,5 +292,12 @@ namespace fallguyloadr
             chargeState.OnChargeEnd = (Action)SetNormal;
             return false;
         }
+
+        [HarmonyPatch(typeof(MotorFunctionPortalStateActive), "End")]
+        [HarmonyPostfix]
+        static void MotorFunctionPortalStateActive(MotorFunctionPortalStateActive __instance)
+        {
+            __instance._motorFunctionPortal.ClearFailSafe();
+        }
     }
 }

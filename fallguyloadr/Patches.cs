@@ -130,7 +130,7 @@ namespace fallguyloadr
                 __instance.CloseScreen();
                 AudioManager.SetGlobalParam(AudioManager.EventMasterData.InGameMenuParam, 0);
                 GlobalGameStateClient.Instance._gameStateMachine.ReplaceCurrentState(new StateMainMenu(GlobalGameStateClient.Instance._gameStateMachine, GlobalGameStateClient.Instance.CreateClientGameStateData(), false).Cast<GameStateMachine.IGameState>());
-                LoaderBehaviour.instance.canLoadLevel = true;
+                LoaderBehaviour.instance.canLoadLevel = false;
             }
             else
             {
@@ -185,13 +185,6 @@ namespace fallguyloadr
         {
             __result = $"{Paths.PluginPath}/fallguyloadr/Assets/{filename}.gdata";
             return false;
-        }
-
-        [HarmonyPatch(typeof(MotorFunctionPortalStateActive), "End")]
-        [HarmonyPostfix]
-        static void MotorFunctionPortalStateActive(MotorFunctionPortalStateActive __instance)
-        {
-            __instance._motorFunctionPortal.ClearFailSafe();
         }
     }
 }
