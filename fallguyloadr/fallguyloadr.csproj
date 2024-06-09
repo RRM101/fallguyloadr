@@ -26,7 +26,7 @@
       <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\core\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>D:\Downloads\lol\FallGuysSS4.8ModdingCopy\BepInEx\interop\Assembly-CSharp.dll</HintPath>
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Catapult.Modules.Items.Protocol">
       <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\Catapult.Modules.Items.Protocol.dll</HintPath>
@@ -35,7 +35,7 @@
       <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\Catapult.Protocol.dll</HintPath>
     </Reference>
     <Reference Include="CMS_Runtime">
-      <HintPath>D:\Downloads\lol\FallGuysSS4.8ModdingCopy\BepInEx\interop\CMS_Runtime.dll</HintPath>
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\CMS_Runtime.dll</HintPath>
     </Reference>
     <Reference Include="DOTween">
       <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\DOTween.dll</HintPath>
@@ -89,7 +89,7 @@
       <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\Unity.ResourceManager.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>D:\Downloads\lol\FallGuysSS4.8ModdingCopy\BepInEx\interop\Unity.TextMeshPro.dll</HintPath>
+      <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>C:\Users\rrm1\FallGuys10.8\BepinEx\interop\UnityEngine.dll</HintPath>

@@ -24,6 +24,7 @@ using Levels.Progression;
 using FG.Common.Character;
 using UniverseLib.UI;
 using FGClient.CatapultServices;
+using BepInEx.Configuration;
 
 namespace fallguyloadr
 {
@@ -32,8 +33,12 @@ namespace fallguyloadr
     {
         public const string version = "1.0.0";
 
+        public static ConfigEntry<string> Username { get; set; }
+
         public override void Load()
         {
+            Username = Config.Bind("Config", "Username", Environment.UserName, "Your username which gets displayed ingame");
+
             ClassInjector.RegisterTypeInIl2Cpp<LoaderBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<FallGuyBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<Fixes.PixelPerfectBoardFix>();
@@ -440,7 +445,7 @@ namespace fallguyloadr
 
         IEnumerator LoginRoutine()
         {
-            LoaderBehaviour.instance.canLoadLevel = true;
+            canLoadLevel = true;
 
             if (CMSLoader.Instance.CMSData == null)
             {

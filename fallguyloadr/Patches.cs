@@ -159,7 +159,7 @@ namespace fallguyloadr
         [HarmonyPrefix]
         static bool IdentityProviderUtilsGetEosOrGeneratedName(ref string __result)
         {
-            __result = Environment.UserName;
+            __result = Plugin.Username.Value;
             return false;
         }
 
