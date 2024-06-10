@@ -35,10 +35,12 @@ namespace fallguyloadr
         public const string version = "1.0.0";
 
         public static ConfigEntry<string> Username { get; set; }
+        public static ConfigEntry<bool> DisablePowerUpUI { get; set; }
 
         public override void Load()
         {
-            Username = Config.Bind("Config", "Username", Environment.UserName, "Your username which gets displayed ingame");
+            Username = Config.Bind("Config", "Username", Environment.UserName, "Your username which gets displayed in-game.");
+            DisablePowerUpUI = Config.Bind("Config", "Disable Power-Up UI", false, "Disables Power-Up UI.");
 
             ClassInjector.RegisterTypeInIl2Cpp<LoaderBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<FallGuyBehaviour>();

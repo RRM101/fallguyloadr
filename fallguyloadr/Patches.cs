@@ -186,5 +186,16 @@ namespace fallguyloadr
             __result = $"{Paths.PluginPath}/fallguyloadr/Assets/{filename}.gdata";
             return false;
         }
+
+        [HarmonyPatch(typeof(GameplayPowerupInventoryViewModel), "Initialise")]
+        [HarmonyPrefix]
+        static bool GameplayPowerupInventoryViewModel(GameplayPowerupInventoryViewModel __instance)
+        {
+            if (Plugin.DisablePowerUpUI.Value)
+            {
+                GameObject.Destroy(__instance.gameObject);
+            }
+            return true;
+        }
     }
 }
