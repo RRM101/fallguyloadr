@@ -12,6 +12,7 @@ using FGClient;
 using FGClient.UI;
 using System;
 using Levels.ScoreZone;
+using fallguyloadr.UI;
 
 namespace fallguyloadr
 {

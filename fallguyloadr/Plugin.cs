@@ -25,6 +25,7 @@ using FG.Common.Character;
 using UniverseLib.UI;
 using FGClient.CatapultServices;
 using BepInEx.Configuration;
+using fallguyloadr.UI;
 
 namespace fallguyloadr
 {
