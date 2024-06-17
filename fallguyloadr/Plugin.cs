@@ -30,6 +30,7 @@ using NAudio.Wave;
 
 namespace fallguyloadr
 {
+    [BepInDependency("org.rrm1.fgchaos")]
     [BepInPlugin("org.rrm1.fallguyloadr", "fallguyloadr", version)]
     public class Plugin : BasePlugin
     {
