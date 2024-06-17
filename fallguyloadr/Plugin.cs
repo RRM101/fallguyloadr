@@ -26,6 +26,7 @@ using UniverseLib.UI;
 using FGClient.CatapultServices;
 using BepInEx.Configuration;
 using fallguyloadr.UI;
+using NAudio.Wave;
 
 namespace fallguyloadr
 {
@@ -520,6 +521,14 @@ namespace fallguyloadr
             customisationSelections.FaceplateOption = faceplateOptions[UnityEngine.Random.Range(0, faceplateOptions.Length)];
             customisationSelections.NameplateOption = nameplateOptions[UnityEngine.Random.Range(0, nameplateOptions.Length)];
             customisationSelections.VictoryPoseOption = victoryOptions[UnityEngine.Random.Range(0, victoryOptions.Length)];
+        }
+
+        void NAudioTest()
+        {
+            WaveOutEvent waveOut = new WaveOutEvent();
+            Mp3FileReader mp3FileReader = new Mp3FileReader("C:/Users/rrm1/Downloads/Dash.mp3");
+            waveOut.Init(mp3FileReader);
+            waveOut.Play();
         }
     }
 }
