@@ -27,6 +27,9 @@ using FGClient.CatapultServices;
 using BepInEx.Configuration;
 using fallguyloadr.UI;
 using NAudio.Wave;
+using System.Text.Json;
+using System.IO;
+using fallguyloadr.JSON;
 
 namespace fallguyloadr
 {
@@ -38,19 +41,29 @@ namespace fallguyloadr
 
         public static ConfigEntry<string> Username { get; set; }
         public static ConfigEntry<bool> DisablePowerUpUI { get; set; }
+        public static ConfigEntry<string> Theme { get; set; }
+        public static ConfigEntry<int> CustomAudioVolume { get; set; }
 
         public override void Load()
         {
             Username = Config.Bind("Config", "Username", Environment.UserName, "Your username which gets displayed in-game.");
             DisablePowerUpUI = Config.Bind("Config", "Disable Power-Up UI", false, "Disables Power-Up UI.");
+            Theme = Config.Bind("Config", "Theme", "", "Custom theme for the Main Menu and the Round Loading Screen.");
+            CustomAudioVolume = Config.Bind("Config", "Custom Audio Volume", 50, "Volume for custom audio. (Max 100)");
 
             ClassInjector.RegisterTypeInIl2Cpp<LoaderBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<FallGuyBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<Fixes.PixelPerfectBoardFix>();
+            ClassInjector.RegisterTypeInIl2Cpp<MainMenuCustomAudio>();
 
             Harmony.CreateAndPatchAll(typeof(Patches));
             Harmony.CreateAndPatchAll(typeof(IsGameServerPatches));
             Harmony.CreateAndPatchAll(typeof(CosmeticsPatches));
+
+            if (Theme.Value != "")
+            {
+                Harmony.CreateAndPatchAll(typeof(ThemePatches));
+            }
 
             GameObject obj = new GameObject("Loader Behaviour");
             GameObject.DontDestroyOnLoad(obj);
@@ -64,6 +77,7 @@ namespace fallguyloadr
     public class LoaderBehaviour : MonoBehaviour
     {
         public static LoaderBehaviour instance;
+        public Theme currentTheme;
         public FallGuysCharacterController fallguy;
         StateGameLoading gameLoading;
         public MPGNetObject netObject;
@@ -454,6 +468,11 @@ namespace fallguyloadr
 
             if (CMSLoader.Instance.CMSData == null)
             {
+                if (Plugin.Theme.Value != "")
+                {
+                    LoadTheme();
+                }
+
                 PlayerTargetSettings.HardCurrencyEnabled = true;
                 PlayerTargetSettings.QuitAnywhereEnabled = true;
                 CatapultServicesManager.Instance.HandleConnected();
@@ -524,12 +543,15 @@ namespace fallguyloadr
             customisationSelections.VictoryPoseOption = victoryOptions[UnityEngine.Random.Range(0, victoryOptions.Length)];
         }
 
-        void NAudioTest()
+        void LoadTheme()
         {
-            WaveOutEvent waveOut = new WaveOutEvent();
-            Mp3FileReader mp3FileReader = new Mp3FileReader("C:/Users/rrm1/Downloads/Dash.mp3");
-            waveOut.Init(mp3FileReader);
-            waveOut.Play();
+            string themeString = File.ReadAllText($"{Paths.PluginPath}/fallguyloadr/Themes/{Plugin.Theme.Value}");
+            currentTheme = JsonSerializer.Deserialize<Theme>(themeString);
+        }
+
+        void SetTheme(Theme theme, GameObject gameObject)
+        {
+
         }
     }
 }
