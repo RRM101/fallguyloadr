@@ -16,6 +16,7 @@ namespace fallguyloadr
         public WaveOutEvent waveOut;
         VolumeWaveProvider16 volumeWaveProvider;
         WaveStream waveProvider;
+        public bool stop = false;
 
         void Awake()
         {
@@ -26,6 +27,7 @@ namespace fallguyloadr
         {
             if (waveOut != null)
             {
+                stop = true;
                 waveOut.Dispose();
             }
             waveOut = new WaveOutEvent();
@@ -37,7 +39,7 @@ namespace fallguyloadr
                 Volume = Math.Min((float)Plugin.CustomAudioVolume.Value / 100, 100)                
             };
 
-
+            stop = false;
             waveOut.Init(volumeWaveProvider);
 
             waveOut.Play();
@@ -53,8 +55,11 @@ namespace fallguyloadr
 
         void OnPlaybackStopped(object sender, StoppedEventArgs eventArgs)
         {
-            waveProvider.CurrentTime = TimeSpan.Zero;
-            waveOut.Play();
+            if (!stop)
+            {
+                waveProvider.CurrentTime = TimeSpan.Zero;
+                waveOut.Play();
+            }
         }
     }
 }

@@ -9,8 +9,8 @@ namespace fallguyloadr.JSON
     public class Theme
     {
         public float[] CirclesRGBA { get; set; }
-        public float[] UpperGradientRGB { get; set; }
-        public float[] LowerGradientRGB { get; set; }
+        public float[] UpperGradientRGBA { get; set; }
+        public float[] LowerGradientRGBA { get; set; }
         public string Pattern { get; set; }
         public string Music { get; set; }
     }

@@ -40,9 +40,12 @@ namespace fallguyloadr
         [HarmonyPrefix]
         static bool MainMenuManagerStopMusic(MainMenuManager __instance)
         {
-            if (__instance.GetComponent<MainMenuCustomAudio>() != null)
+            MainMenuCustomAudio mainMenuCustomAudio = __instance.GetComponent<MainMenuCustomAudio>();
+
+            if (mainMenuCustomAudio.waveOut != null)
             {
-                __instance.GetComponent<MainMenuCustomAudio>().waveOut.Dispose();
+                mainMenuCustomAudio.stop = true;
+                mainMenuCustomAudio.waveOut.Dispose();
             }
 
             return false;

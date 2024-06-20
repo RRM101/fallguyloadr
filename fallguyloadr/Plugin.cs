@@ -30,6 +30,7 @@ using NAudio.Wave;
 using System.Text.Json;
 using System.IO;
 using fallguyloadr.JSON;
+using UnityEngine.UI;
 
 namespace fallguyloadr
 {
@@ -480,6 +481,9 @@ namespace fallguyloadr
                 LoadCustomisations();
             }
 
+            GameObject background = GameObject.Find("Generic_UI_SeasonS10Background_Canvas_Variant");
+            SetTheme(currentTheme, background);
+
             try // i just don't care
             {
                 FindObjectOfType<TitleScreenViewModel>().OnLoginSucceeded();
@@ -543,15 +547,56 @@ namespace fallguyloadr
             customisationSelections.VictoryPoseOption = victoryOptions[UnityEngine.Random.Range(0, victoryOptions.Length)];
         }
 
+        public static Sprite PNGtoSprite(string path)
+        {
+            byte[] imagedata = File.ReadAllBytes(path);
+            Texture2D texture = new Texture2D(0, 0, TextureFormat.ARGB32, false);
+            ImageConversion.LoadImage(texture, imagedata);
+            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+            return sprite;
+        }
+
         void LoadTheme()
         {
             string themeString = File.ReadAllText($"{Paths.PluginPath}/fallguyloadr/Themes/{Plugin.Theme.Value}");
             currentTheme = JsonSerializer.Deserialize<Theme>(themeString);
+
+            LoadingGameScreenViewModel[] loadingGameScreens = Resources.FindObjectsOfTypeAll<LoadingGameScreenViewModel>();
+            foreach (LoadingGameScreenViewModel loadingGameScreen in loadingGameScreens)
+            {
+                if (loadingGameScreen.name == "Prime_UI_RoundSelected_Prefab_Canvas")
+                {
+                    SetTheme(currentTheme, loadingGameScreen.transform.GetChild(1).GetChild(0).gameObject);
+                }
+            }
         }
 
         void SetTheme(Theme theme, GameObject gameObject)
         {
+            Sprite pattern = PNGtoSprite($"{Paths.PluginPath}/fallguyloadr/Themes/{theme.Pattern}");
+            Transform mask = gameObject.transform.GetChild(1);
 
+            if (theme.UpperGradientRGBA != null)
+            {
+                Image backdrop = mask.GetChild(0).GetComponent<Image>();
+                backdrop.sprite = null;
+                backdrop.color = new Color(theme.UpperGradientRGBA[0], theme.UpperGradientRGBA[1], theme.UpperGradientRGBA[2], theme.UpperGradientRGBA[3]);
+            }
+
+            if (theme.CirclesRGBA != null)
+            {
+                mask.GetChild(2).GetComponent<Image>().color = Color.white;
+                Material circlesMaterial = mask.GetChild(2).GetComponent<Image>().material;
+                circlesMaterial.color = new Color(theme.CirclesRGBA[0], theme.CirclesRGBA[1], theme.CirclesRGBA[2], theme.CirclesRGBA[3]);
+                circlesMaterial.SetTexture("_Pattern", pattern.texture);
+            }
+
+            if (theme.LowerGradientRGBA != null)
+            {
+                Image gradient = mask.GetChild(3).GetComponent<Image>();
+                gradient.gameObject.SetActive(true);
+                gradient.color = new Color(theme.LowerGradientRGBA[0], theme.LowerGradientRGBA[1], theme.LowerGradientRGBA[2], theme.LowerGradientRGBA[3]);
+            }
         }
     }
 }
