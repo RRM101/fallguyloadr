@@ -171,6 +171,7 @@ namespace fallguyloadr.UI
 
         void ReloadGame(bool wasOk)
         {
+            GlobalGameStateClient.Instance.ForceMainMenuSceneReload = true;
             LoaderBehaviour.instance.LoadTheme();
             if (SceneManager.GetActiveScene().name == "MainMenu")
             {

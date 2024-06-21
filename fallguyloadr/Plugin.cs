@@ -565,18 +565,49 @@ namespace fallguyloadr
             return null;
         }
 
+        void Quit(bool wasOk)
+        {
+            Application.Quit();
+        }
+
+        void QuitPopup()
+        {
+            canLoadLevel = false;
+            Action<bool> action = Quit;
+
+            ModalMessageData modalMessageData = new ModalMessageData()
+            {
+                Title = "fallguyloadr - Themes",
+                Message = $"The Theme you have selected ({Plugin.Theme.Value}) does not exist",
+                LocaliseTitle = UIModalMessage.LocaliseOption.NotLocalised,
+                LocaliseMessage = UIModalMessage.LocaliseOption.NotLocalised,
+                ModalType = UIModalMessage.ModalType.MT_BLOCKING,
+                OnCloseButtonPressed = action
+            };
+
+            PopupManager.Instance.Show(PopupInteractionType.Error, modalMessageData);
+            Plugin.Theme.Value = "Default";
+        }
+
         public void LoadTheme()
         {
-            string themeString = File.ReadAllText($"{Paths.PluginPath}/fallguyloadr/Themes/{Plugin.Theme.Value}");
-            currentTheme = JsonSerializer.Deserialize<Theme>(themeString);
-
-            LoadingGameScreenViewModel[] loadingGameScreens = Resources.FindObjectsOfTypeAll<LoadingGameScreenViewModel>();
-            foreach (LoadingGameScreenViewModel loadingGameScreen in loadingGameScreens)
+            if (File.Exists($"{Paths.PluginPath}/fallguyloadr/Themes/{Plugin.Theme.Value}"))
             {
-                if (loadingGameScreen.name == "Prime_UI_RoundSelected_Prefab_Canvas")
+                string themeString = File.ReadAllText($"{Paths.PluginPath}/fallguyloadr/Themes/{Plugin.Theme.Value}");
+                currentTheme = JsonSerializer.Deserialize<Theme>(themeString);
+
+                LoadingGameScreenViewModel[] loadingGameScreens = Resources.FindObjectsOfTypeAll<LoadingGameScreenViewModel>();
+                foreach (LoadingGameScreenViewModel loadingGameScreen in loadingGameScreens)
                 {
-                    SetTheme(currentTheme, loadingGameScreen.transform.GetChild(1).GetChild(0).gameObject);
+                    if (loadingGameScreen.name == "Prime_UI_RoundSelected_Prefab_Canvas")
+                    {
+                        SetTheme(currentTheme, loadingGameScreen.transform.GetChild(1).GetChild(0).gameObject);
+                    }
                 }
+            }
+            else
+            {
+                QuitPopup();
             }
         }
 

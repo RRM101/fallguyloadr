@@ -1,0 +1,7 @@
+{
+	"CirclesRGBA": [0.0941, 0.2824, 0.6471, 1],
+	"UpperGradientRGBA": [0.0471, 0.2431, 0.6275, 1],
+	"LowerGradientRGBA": [0.0784, 0.6824, 0.6706, 0.6902],
+	"Pattern": "S9Pattern.png",
+	"Music": "S9MenuMusic.wav"
+}
