@@ -46,6 +46,21 @@ namespace fallguyloadr
             waveOut.PlaybackStopped += OnPlaybackStopped;
         }
 
+        void OnApplicationFocus(bool hasFocus)
+        {
+            if (volumeWaveProvider != null)
+            {
+                if (!hasFocus && AudioManager.Instance.MuteAudioOnFocusLostSetting)
+                {
+                    volumeWaveProvider.Volume = 0;
+                }
+                else
+                {
+                    volumeWaveProvider.Volume = Math.Min((float)Plugin.CustomAudioVolume.Value / 100, 100);
+                }
+            }
+        }
+
         void CustomAudioVolumeSettingChanged(object sender, EventArgs eventArgs)
         {
             SettingChangedEventArgs settingChangedEventArgs = (SettingChangedEventArgs)eventArgs;

@@ -38,7 +38,7 @@ namespace fallguyloadr
     [BepInPlugin("org.rrm1.fallguyloadr", "fallguyloadr", version)]
     public class Plugin : BasePlugin
     {
-        public const string version = "1.0.0";
+        public const string version = "1.1.0";
 
         public static ConfigEntry<string> Username { get; set; }
         public static ConfigEntry<bool> DisablePowerUpUI { get; set; }
@@ -49,7 +49,7 @@ namespace fallguyloadr
         {
             Username = Config.Bind("Config", "Username", Environment.UserName, "Your username which gets displayed in-game.");
             DisablePowerUpUI = Config.Bind("Config", "Disable Power-Up UI", false, "Disables Power-Up UI.");
-            Theme = Config.Bind("Config", "Theme", "", "Custom theme for the Main Menu and the Round Loading Screen.");
+            Theme = Config.Bind("Config", "Theme", "Default", "Custom theme for the Main Menu and the Round Loading Screen.");
             CustomAudioVolume = Config.Bind("Config", "Custom Audio Volume", 50, "Volume for custom audio. (Max 100)");
 
             ClassInjector.RegisterTypeInIl2Cpp<LoaderBehaviour>();
@@ -61,7 +61,7 @@ namespace fallguyloadr
             Harmony.CreateAndPatchAll(typeof(IsGameServerPatches));
             Harmony.CreateAndPatchAll(typeof(CosmeticsPatches));
 
-            if (Theme.Value != "")
+            if (Theme.Value != "Default")
             {
                 Harmony.CreateAndPatchAll(typeof(ThemePatches));
             }
@@ -78,7 +78,7 @@ namespace fallguyloadr
     public class LoaderBehaviour : MonoBehaviour
     {
         public static LoaderBehaviour instance;
-        public Theme currentTheme;
+        public Theme currentTheme = JsonSerializer.Deserialize<Theme>(File.ReadAllText($"{Paths.PluginPath}/fallguyloadr/Themes/Season7_Theme.json"));
         public FallGuysCharacterController fallguy;
         StateGameLoading gameLoading;
         public MPGNetObject netObject;
@@ -117,6 +117,8 @@ namespace fallguyloadr
                 UI = UniversalUI.RegisterUI("org.rrm1.fallguyloadr", null);
                 new SkinPresetsUI(UI);
                 SkinPresetsUI.instance.SetActive(false);
+                new ThemeSelector(UI);
+                ThemeSelector.instance.SetActive(false);
                 new LoaderUI(UI);
                 UniverseLib.Config.ConfigManager.Force_Unlock_Mouse = false;
                 AddCMSStringKeys();
@@ -469,7 +471,7 @@ namespace fallguyloadr
 
             if (CMSLoader.Instance.CMSData == null)
             {
-                if (Plugin.Theme.Value != "")
+                if (Plugin.Theme.Value != "Default")
                 {
                     LoadTheme();
                 }
@@ -481,8 +483,11 @@ namespace fallguyloadr
                 LoadCustomisations();
             }
 
-            GameObject background = GameObject.Find("Generic_UI_SeasonS10Background_Canvas_Variant");
-            SetTheme(currentTheme, background);
+            if (Plugin.Theme.Value != "Default")
+            {
+                GameObject background = GameObject.Find("Generic_UI_SeasonS10Background_Canvas_Variant");
+                SetTheme(currentTheme, background);
+            }
 
             try // i just don't care
             {
@@ -549,14 +554,18 @@ namespace fallguyloadr
 
         public static Sprite PNGtoSprite(string path)
         {
-            byte[] imagedata = File.ReadAllBytes(path);
-            Texture2D texture = new Texture2D(0, 0, TextureFormat.ARGB32, false);
-            ImageConversion.LoadImage(texture, imagedata);
-            Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
-            return sprite;
+            if (File.Exists(path))
+            {
+                byte[] imagedata = File.ReadAllBytes(path);
+                Texture2D texture = new Texture2D(0, 0, TextureFormat.ARGB32, false);
+                ImageConversion.LoadImage(texture, imagedata);
+                Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+                return sprite;
+            }
+            return null;
         }
 
-        void LoadTheme()
+        public void LoadTheme()
         {
             string themeString = File.ReadAllText($"{Paths.PluginPath}/fallguyloadr/Themes/{Plugin.Theme.Value}");
             currentTheme = JsonSerializer.Deserialize<Theme>(themeString);
@@ -571,7 +580,7 @@ namespace fallguyloadr
             }
         }
 
-        void SetTheme(Theme theme, GameObject gameObject)
+        public void SetTheme(Theme theme, GameObject gameObject)
         {
             Sprite pattern = PNGtoSprite($"{Paths.PluginPath}/fallguyloadr/Themes/{theme.Pattern}");
             Transform mask = gameObject.transform.GetChild(1);
