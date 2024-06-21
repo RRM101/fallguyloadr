@@ -1,7 +1,7 @@
 {
-	"CirclesRGBA": [0.4, 0.192, 0.604, 1],
-	"UpperGradientRGBA": [0.365, 0.176, 0.553, 1],
-	"LowerGradientRGBA": [0.498, 0.294, 0.710, 1],
+	"CirclesRGBA": [0.725, 0.443, 0.984, 1],
+	"UpperGradientRGBA": [0.667, 0.349, 0.973, 1],
+	"LowerGradientRGBA": [0.725, 0.443, 0.984, 1],
 	"Pattern": "S2Pattern.png",
 	"Music": "S2MenuMusic.wav"
 }
