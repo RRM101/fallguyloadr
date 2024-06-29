@@ -31,6 +31,7 @@ using System.Text.Json;
 using System.IO;
 using fallguyloadr.JSON;
 using UnityEngine.UI;
+using Levels.Hoops;
 
 namespace fallguyloadr
 {
@@ -55,6 +56,8 @@ namespace fallguyloadr
             ClassInjector.RegisterTypeInIl2Cpp<LoaderBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<FallGuyBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<Fixes.PixelPerfectBoardFix>();
+            ClassInjector.RegisterTypeInIl2Cpp<Fixes.HoopsManagerReimplementation>();
+            ClassInjector.RegisterTypeInIl2Cpp<Fixes.HoopReimplementation>();
             ClassInjector.RegisterTypeInIl2Cpp<MainMenuCustomAudio>();
 
             Harmony.CreateAndPatchAll(typeof(Patches));
@@ -292,6 +295,12 @@ namespace fallguyloadr
                     Transform spawn = ItemParent.GetChild(randomnumber);
                     Instantiate(bulkItemSpawner.ItemPrefab, spawn.position, spawn.rotation);
                 }
+            }
+
+            HoopsManager hoopsManager = FindObjectOfType<HoopsManager>();
+            if (hoopsManager != null)
+            {
+                hoopsManager.gameObject.AddComponent<Fixes.HoopsManagerReimplementation>();
             }
         }
 

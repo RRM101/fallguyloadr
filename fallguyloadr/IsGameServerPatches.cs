@@ -1,4 +1,5 @@
-﻿using FG.Common;
+﻿using DG.Tweening;
+using FG.Common;
 using FG.Common.Character;
 using FG.Common.CMS;
 using FG.Common.LevelEvents;
@@ -15,6 +16,7 @@ using Levels.WallGuys;
 using SRF;
 using System;
 using UnityEngine;
+using static RootMotion.FinalIK.AimPoser;
 
 namespace fallguyloadr
 {
@@ -270,7 +272,7 @@ namespace fallguyloadr
 
         [HarmonyPatch(typeof(COMMON_BullRMIController), "Start")]
         [HarmonyPrefix]
-        static bool COMMON_BullRMIController(COMMON_BullRMIController __instance)
+        static bool COMMON_BullRMIControllerStart(COMMON_BullRMIController __instance)
         {
             __instance.SetNormal(__instance._bullAI.stateMachine.chaseState.SpeedOverride);
 
@@ -295,9 +297,17 @@ namespace fallguyloadr
 
         [HarmonyPatch(typeof(MotorFunctionPortalStateActive), "End")]
         [HarmonyPostfix]
-        static void MotorFunctionPortalStateActive(MotorFunctionPortalStateActive __instance)
+        static void MotorFunctionPortalStateActiveEnd(MotorFunctionPortalStateActive __instance)
         {
             __instance._motorFunctionPortal.ClearFailSafe();
+        }
+
+        [HarmonyPatch(typeof(COMMON_Hoop), "PlayEnter")]
+        [HarmonyPostfix]
+        static void COMMON_HoopPlayEnter(COMMON_Hoop __instance, bool isGold, bool firstRun, Vector3 pos)
+        {
+            __instance.transform.parent.DOMoveY(pos.y, 2).SetEase(Ease.InOutSine);
+            __instance.UpdateVisuals(isGold);
         }
     }
 }

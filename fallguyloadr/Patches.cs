@@ -7,6 +7,7 @@ using FGClient.CatapultServices;
 using FGClient.Challenges;
 using FGClient.UI;
 using HarmonyLib;
+using Levels;
 using Levels.SnowballSurvival;
 using System;
 using UnityEngine;
@@ -22,6 +23,7 @@ namespace fallguyloadr
         [HarmonyPatch(typeof(COMMON_SnowballSurvivalBall), "Awake")]
         [HarmonyPatch(typeof(InGameUiManager), "Cleanup")]
         [HarmonyPatch(typeof(ClientPlayerManager), "OnPlayerSpawned")]
+        [HarmonyPatch(typeof(ServerOnlyComponent), "Awake")]
         [HarmonyPrefix]
         static bool donothing()
         {
