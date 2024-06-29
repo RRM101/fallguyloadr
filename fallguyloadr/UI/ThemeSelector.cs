@@ -103,12 +103,6 @@ namespace fallguyloadr.UI
             UIFactory.SetLayoutElement(imageGameObject);
         }
 
-        protected override void OnClosePanelClicked()
-        {
-            Owner.Enabled = false;
-            CursorManager.Instance.OnApplicationFocus(true);
-        }
-
         void SelectTheme()
         {
             if (LoaderBehaviour.instance.canLoadLevel && pickedThemeName != null)
