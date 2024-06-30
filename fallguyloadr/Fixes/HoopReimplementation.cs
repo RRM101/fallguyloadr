@@ -15,6 +15,7 @@ namespace fallguyloadr.Fixes
     {
         COMMON_Hoop hoop;
         bool collected = false;
+        public Action OnCollect;
 
         void Awake()
         {
@@ -42,6 +43,7 @@ namespace fallguyloadr.Fixes
             Vector3 pos = transform.position;
             pos.y += 100;
             yield return transform.parent.DOMoveY(pos.y, 2).SetEase(Ease.InOutSine);
+            OnCollect.Invoke();
             Destroy(this);
         }
     }

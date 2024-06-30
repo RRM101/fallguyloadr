@@ -1,4 +1,5 @@
-﻿using Levels;
+﻿using DG.Tweening;
+using Levels;
 using Levels.Hoops;
 using System;
 using System.Collections.Generic;
@@ -32,9 +33,35 @@ namespace fallguyloadr.Fixes
             {
                 COMMON_Hoop hoop = Instantiate(hoopsManager._hoopPrefab, hoopSlot.transform).GetComponentInChildren<COMMON_Hoop>();
 
-                hoop.gameObject.AddComponent<HoopReimplementation>();  
+                hoop.gameObject.AddComponent<HoopReimplementation>().OnCollect = SpawnHoopInEmptyHoopSlot;  
                 hoopSlot.Hoop = hoop;
             }
+        }
+
+        void SpawnHoopInEmptyHoopSlot()
+        {
+            List<HoopSlot> emptyHoopSlots = new();
+
+            for (int i = 0; i < hoopsManager._hoopsHolder.GetChildCount(); i++)
+            {
+                HoopSlot hoopSlot = hoopsManager._hoopsHolder.GetChild(i).gameObject.GetComponent<HoopSlot>();
+                if (hoopSlot.Hoop == null)
+                {
+                    emptyHoopSlots.Add(hoopSlot);
+                }
+            }
+
+            HoopSlot randomEmptyHoopSlot = emptyHoopSlots[UnityEngine.Random.Range(0, emptyHoopSlots.Count())];
+
+            COMMON_Hoop hoop = Instantiate(hoopsManager._hoopPrefab, randomEmptyHoopSlot.transform).GetComponentInChildren<COMMON_Hoop>();
+            hoop.gameObject.AddComponent<HoopReimplementation>().OnCollect = SpawnHoopInEmptyHoopSlot;
+            randomEmptyHoopSlot.Hoop = hoop;
+
+            hoop.PlayEnter(false, 1, randomEmptyHoopSlot.transform.position, new Quaternion(), false);
+            Vector3 pos = hoop.transform.parent.position;
+            pos.y += 100;
+            hoop.transform.parent.position = pos;
+            hoop.transform.parent.DOMoveY(randomEmptyHoopSlot.transform.position.y, 2).SetEase(Ease.InOutSine);
         }
     }
 }

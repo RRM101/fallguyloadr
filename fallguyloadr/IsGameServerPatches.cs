@@ -306,7 +306,7 @@ namespace fallguyloadr
         [HarmonyPostfix]
         static void COMMON_HoopPlayEnter(COMMON_Hoop __instance, bool isGold, bool firstRun, Vector3 pos)
         {
-            __instance.transform.parent.DOMoveY(pos.y, 2).SetEase(Ease.InOutSine);
+            //__instance.transform.parent.DOMoveY(pos.y, 2).SetEase(Ease.InOutSine);
             __instance.UpdateVisuals(isGold);
         }
     }
