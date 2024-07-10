@@ -104,7 +104,7 @@ namespace fallguyloadr.UI
             GameObject buttonRow = UIFactory.CreateHorizontalGroup(ContentRoot, "Buttons", true, false, true, true, 4, bgColor: new Color(0.07f, 0.07f, 0.07f, 1));
 
             ButtonRef loadRoundButton = UIFactory.CreateButton(buttonRow, "Load Round Button", "Load Round");
-            UIFactory.SetLayoutElement(loadRoundButton.Component.gameObject, minHeight: 25, minWidth: 180, flexibleWidth: 0, flexibleHeight: 0);
+            UIFactory.SetLayoutElement(loadRoundButton.Component.gameObject, minHeight: 25, minWidth: 0, flexibleWidth: 0, flexibleHeight: 0);
             loadRoundButton.OnClick += () =>
             {
                 if (variationsForSelectedRound != null)
@@ -114,16 +114,19 @@ namespace fallguyloadr.UI
             };
 
             ButtonRef loadRandomRoundButton = UIFactory.CreateButton(buttonRow, "Load Random Round Button", "Load Random Round");
-            UIFactory.SetLayoutElement(loadRandomRoundButton.Component.gameObject, minHeight: 25, minWidth: 180, flexibleWidth: 0, flexibleHeight: 0);
+            UIFactory.SetLayoutElement(loadRandomRoundButton.Component.gameObject, minHeight: 25, minWidth: 0, flexibleWidth: 0, flexibleHeight: 0);
             loadRandomRoundButton.OnClick += LoadRandomRound;
 
             ButtonRef skinPresetsButton = UIFactory.CreateButton(buttonRow, "Skin Presets Button", "Skin Presets");
-            UIFactory.SetLayoutElement(skinPresetsButton.Component.gameObject, minHeight: 25, minWidth: 180, flexibleWidth: 0, flexibleHeight: 0);
+            UIFactory.SetLayoutElement(skinPresetsButton.Component.gameObject, minHeight: 25, minWidth: 0, flexibleWidth: 0, flexibleHeight: 0);
             skinPresetsButton.OnClick += SkinPresetsUI.instance.Toggle;
 
-            ButtonRef themeSelectorButton = UIFactory.CreateButton(buttonRow, "Theme Selector Button", "Select Theme");
-            UIFactory.SetLayoutElement(themeSelectorButton.Component.gameObject, minHeight: 25, minWidth: 180, flexibleWidth: 0, flexibleHeight: 0);
+            ButtonRef themeSelectorButton = UIFactory.CreateButton(buttonRow, "Theme Selector Button", "Themes");
+            UIFactory.SetLayoutElement(themeSelectorButton.Component.gameObject, minHeight: 25, minWidth: 0, flexibleWidth: 0, flexibleHeight: 0);
             themeSelectorButton.OnClick += ThemeSelector.instance.Toggle;
+
+            ButtonRef replaysButton = UIFactory.CreateButton(buttonRow, "Replays Button", "Replays");
+            UIFactory.SetLayoutElement(replaysButton.Component.gameObject, minHeight: 25, minWidth: 0, flexibleWidth: 0, flexibleHeight: 0);
         }
 
         protected override void OnClosePanelClicked()

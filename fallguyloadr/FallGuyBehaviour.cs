@@ -13,21 +13,35 @@ using FGClient.UI;
 using System;
 using Levels.ScoreZone;
 using fallguyloadr.UI;
+using System.Collections.Generic;
+using fallguyloadr.JSON;
+using System.Text.Json;
+using System.IO;
+using BepInEx;
 
 namespace fallguyloadr
 {
     public class FallGuyBehaviour : MonoBehaviour
     {
+        public bool startPlaying;
+        List<Vector3> positons = new();
+        List<Quaternion> rotations = new();
+        int playingIndex;
+
+        Rigidbody rb;
         MotorAgent motorAgent;
         MPGNetObject netObject;
         CheckpointManager checkpointManager;
+        MotorFunctionMovement movement;
         bool qualified;
 
         void Start()
         {
+            rb = GetComponent<Rigidbody>();
             motorAgent = GetComponent<MotorAgent>();
             netObject = GetComponent<MPGNetObject>();
             checkpointManager = FindObjectOfType<CheckpointManager>();
+            movement = motorAgent.GetMotorFunction<MotorFunctionMovement>();
 
             MotorFunctionPowerup motorFunctionPowerup = motorAgent.GetMotorFunction<MotorFunctionPowerup>();
 
@@ -47,6 +61,98 @@ namespace fallguyloadr
             }
         }
 
+        void FixedUpdate()
+        {
+            if (startPlaying)
+            {
+                if (LoaderBehaviour.instance.currentReplay != null)
+                {
+                    if (positons.Count-1 < playingIndex | rotations.Count-1 < playingIndex)
+                    {
+                        StopPlayingReplay();
+                        return;
+                    }
+
+                    rb.velocity = Vector3.zero;
+                    transform.position = positons[playingIndex];
+                    transform.rotation = rotations[playingIndex];
+                    motorAgent.Animator.SetBool(new HashedAnimatorString("Moving"), true);
+                    movement.SetDesiredLean(1);
+                    playingIndex++;
+                }
+                else
+                {
+                    positons.Add(transform.position);
+                    rotations.Add(transform.rotation);
+                }
+            }
+        }
+
+        public void RoundStarted()
+        {
+            if (LoaderBehaviour.instance.currentReplay != null)
+            {
+                Replay replay = LoaderBehaviour.instance.currentReplay;
+                foreach (float[] position in replay.Positions)
+                {
+                    positons.Add(new Vector3(position[0], position[1], position[2]));
+                }
+
+                foreach (float[] rotation in replay.Rotations)
+                {
+                    rotations.Add(new Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]));
+                }
+            }
+            else
+            {
+                positons.Clear();
+                rotations.Clear();
+            }
+            startPlaying = true;
+        }
+
+        public void StopRecording(bool save)
+        {
+            startPlaying = false;
+            if (save)
+            {
+                List<float[]> positionsList = new();
+                List<float[]> rotationsList = new();
+
+                foreach (Vector3 position in positons)
+                {
+                    positionsList.Add(new float[] {position.x, position.y, position.z});
+                }
+
+                foreach (Quaternion rotation in rotations)
+                {
+                    rotationsList.Add(new float[] { rotation.x, rotation.y, rotation.z, rotation.w });
+                }
+
+                Replay replay = new Replay();
+                replay.Version = Plugin.version;
+                replay.Seed = LoaderBehaviour.seed;
+                replay.RoundID = NetworkGameData.currentGameOptions_._roundID;
+                replay.Positions = positionsList.ToArray();
+                replay.Rotations = rotationsList.ToArray();
+
+                string replayJson = JsonSerializer.Serialize<Replay>(replay);
+
+                string datetime = $"{DateTime.Now.Day}-{DateTime.Now.Month}-{DateTime.Now.Year} {DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}";
+
+                File.WriteAllText($"{Paths.PluginPath}/fallguyloadr/Replays/Replay - {NetworkGameData.currentGameOptions_._roundID} - {datetime}.json", replayJson);
+            }
+        }
+
+        void StopPlayingReplay()
+        {
+            startPlaying = false;
+            positons.Clear();
+            rotations.Clear();
+            GetComponent<FallGuysCharacterControllerInput>().AcceptInput = true;
+            LoaderBehaviour.instance.currentReplay = null;
+        }
+
         void OnTriggerEnter(Collider other)
         {
             BinaryPixel binaryPixel = other.gameObject.GetComponentInParent<BinaryPixel>();
@@ -64,6 +170,15 @@ namespace fallguyloadr
             if ((endZoneVFXTrigger != null || objectiveReachEndZone != null) && !qualified)
             {
                 qualified = true;
+                if (LoaderBehaviour.instance.currentReplay != null)
+                {
+
+                }
+                else
+                {
+                    StopRecording(true);
+                }
+
                 Qualify();
             }
 

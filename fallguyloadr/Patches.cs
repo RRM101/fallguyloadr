@@ -34,7 +34,7 @@ namespace fallguyloadr
         [HarmonyPrefix]
         static bool RoundRandomSeed(ClientGameStateView __instance, ref int __result)
         {
-            __result = DateTime.Now.Millisecond;
+            __result = LoaderBehaviour.seed;
             return false;
         }
 
@@ -99,6 +99,8 @@ namespace fallguyloadr
         static bool ClientGameManagerOnIntroCountdownEnded(ClientGameManager __instance)
         {
             LoaderBehaviour.instance.FixObstacles();
+            FallGuyBehaviour fallGuyBehaviour = LoaderBehaviour.instance.fallguy.GetComponent<FallGuyBehaviour>();
+            fallGuyBehaviour.RoundStarted();
             LoaderBehaviour.instance.canLoadLevel = true;
             return true;
         }

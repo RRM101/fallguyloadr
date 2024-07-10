@@ -81,6 +81,7 @@ namespace fallguyloadr
     public class LoaderBehaviour : MonoBehaviour
     {
         public static LoaderBehaviour instance;
+        public static int seed = DateTime.Now.Millisecond;
         public Theme currentTheme = JsonSerializer.Deserialize<Theme>(File.ReadAllText($"{Paths.PluginPath}/fallguyloadr/Themes/Season7_Theme.json"));
         public FallGuysCharacterController fallguy;
         StateGameLoading gameLoading;
@@ -88,6 +89,7 @@ namespace fallguyloadr
         public ClientGameManager cgm;
         UIBase UI;
         public bool canLoadLevel = true;
+        public Replay currentReplay;
 
         void Awake()
         {
@@ -179,6 +181,7 @@ namespace fallguyloadr
                     netObject.FGCharacterController = fallguy;
                     netObject.pNetTX_ = new MPGNetTransform(netObject, null, null, null, false, 0);
                     fallguy._pNetObject = netObject;
+                    fallguy.GetComponent<FallGuysCharacterControllerInput>().AcceptInput = currentReplay != null;
                     LoadBank("BNK_SFX_PowerUp");
                     LoadBank("BNK_SFX_PowerUp_RollingBall");
                 }
@@ -332,10 +335,12 @@ namespace fallguyloadr
             gameLoading.HandleGameServerStartGame(startGameMessage);
         }
 
-        public void LoadRound(string round_id)
+        public void LoadRound(string round_id, int seed_)
         {
             if (canLoadLevel)
             {
+                seed = seed_;
+
                 Round round = CMSLoader.Instance.CMSData.Rounds[round_id];
 
                 if (SceneManager.GetActiveScene().name == round.GetSceneName())
@@ -388,6 +393,11 @@ namespace fallguyloadr
 
                 PopupManager.Instance.Show(PopupInteractionType.Info, modalMessageData);
             }
+        }
+
+        public void LoadRound(string round_id)
+        {
+            LoadRound(round_id, DateTime.Now.Millisecond);
         }
 
         public void LoadRound(Round round)
@@ -646,6 +656,18 @@ namespace fallguyloadr
                 gradient.gameObject.SetActive(true);
                 gradient.color = new Color(theme.LowerGradientRGBA[0], theme.LowerGradientRGBA[1], theme.LowerGradientRGBA[2], theme.LowerGradientRGBA[3]);
             }
+        }
+
+        void PlayReplay(Replay replay)
+        {
+            currentReplay = replay;
+            LoadRound(replay.RoundID, replay.Seed);
+        }
+
+        void testreplay()
+        {
+            Replay replay = JsonSerializer.Deserialize<Replay>(File.ReadAllText($"{Paths.PluginPath}/fallguyloadr/Replays/Replay - round_chompchomp - 10-7-2024 16-3-39.json"));
+            PlayReplay(replay);
         }
     }
 }
