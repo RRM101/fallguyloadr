@@ -130,6 +130,7 @@ namespace fallguyloadr.UI
 
             ButtonRef replaysButton = UIFactory.CreateButton(miscButtons, "Replays Button", "Replays");
             UIFactory.SetLayoutElement(replaysButton.Component.gameObject, minHeight: 25, minWidth: 0, flexibleWidth: 0, flexibleHeight: 0);
+            replaysButton.OnClick += ReplaySelector.instance.Toggle;
         }
 
         protected override void OnClosePanelClicked()

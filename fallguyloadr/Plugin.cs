@@ -124,6 +124,8 @@ namespace fallguyloadr
                 SkinPresetsUI.instance.SetActive(false);
                 new ThemeSelector(UI);
                 ThemeSelector.instance.SetActive(false);
+                new ReplaySelector(UI);
+                ReplaySelector.instance.SetActive(false);
                 new LoaderUI(UI);
                 UniverseLib.Config.ConfigManager.Force_Unlock_Mouse = false;
                 AddCMSStringKeys();
@@ -659,18 +661,6 @@ namespace fallguyloadr
                 gradient.gameObject.SetActive(true);
                 gradient.color = new Color(theme.LowerGradientRGBA[0], theme.LowerGradientRGBA[1], theme.LowerGradientRGBA[2], theme.LowerGradientRGBA[3]);
             }
-        }
-
-        void PlayReplay(Replay replay)
-        {
-            currentReplay = replay;
-            LoadRound(replay.RoundID, replay.Seed);
-        }
-
-        void testreplay()
-        {
-            Replay replay = JsonSerializer.Deserialize<Replay>(File.ReadAllText($"{Paths.PluginPath}/fallguyloadr/Replays/Replay - round_chompchomp - 10-7-2024 16-3-39.json"));
-            PlayReplay(replay);
         }
     }
 }

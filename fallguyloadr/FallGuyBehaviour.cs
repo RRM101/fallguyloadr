@@ -18,6 +18,8 @@ using fallguyloadr.JSON;
 using System.Text.Json;
 using System.IO;
 using BepInEx;
+using FG.Common.CMS;
+using System.Text.RegularExpressions;
 
 namespace fallguyloadr
 {
@@ -143,7 +145,7 @@ namespace fallguyloadr
 
                 string datetime = $"{DateTime.Now.Day}-{DateTime.Now.Month}-{DateTime.Now.Year} {DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}";
 
-                File.WriteAllText($"{Paths.PluginPath}/fallguyloadr/Replays/Replay - {NetworkGameData.currentGameOptions_._roundID} - {datetime}.json", replayJson);
+                File.WriteAllText($"{Paths.PluginPath}/fallguyloadr/Replays/{RemoveIndentation(CMSLoader.Instance.CMSData.Rounds[NetworkGameData.currentGameOptions_._roundID].DisplayName.Text)} - {datetime}.json", replayJson);
             }
         }
 
@@ -153,6 +155,12 @@ namespace fallguyloadr
             positons.Clear();
             rotations.Clear();
             LoaderBehaviour.instance.currentReplay = null;
+        }
+
+        string RemoveIndentation(string inputString)
+        {
+            string noTagsString = Regex.Replace(inputString, "<.*?>", string.Empty);
+            return Regex.Replace(noTagsString, " {2,}", " ");
         }
 
         void OnTriggerEnter(Collider other)
@@ -172,11 +180,7 @@ namespace fallguyloadr
             if ((endZoneVFXTrigger != null || objectiveReachEndZone != null) && !qualified)
             {
                 qualified = true;
-                if (LoaderBehaviour.instance.currentReplay != null)
-                {
-
-                }
-                else
+                if (LoaderBehaviour.instance.currentReplay == null)
                 {
                     StopRecording(true);
                 }
