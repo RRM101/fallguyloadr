@@ -181,7 +181,6 @@ namespace fallguyloadr
                     netObject.FGCharacterController = fallguy;
                     netObject.pNetTX_ = new MPGNetTransform(netObject, null, null, null, false, 0);
                     fallguy._pNetObject = netObject;
-                    fallguy.GetComponent<FallGuysCharacterControllerInput>().AcceptInput = currentReplay != null;
                     LoadBank("BNK_SFX_PowerUp");
                     LoadBank("BNK_SFX_PowerUp_RollingBall");
                 }
@@ -325,14 +324,18 @@ namespace fallguyloadr
         {
             yield return new WaitForSeconds(5);
             gameLoading.OnServerRequestStartIntroCameras();
-            yield return new WaitForSeconds(gameLoading._clientGameManager.CameraDirector.IntroCamerasDuration);
+            ClientGameManager cgm = gameLoading._clientGameManager;
+            yield return new WaitForSeconds(cgm.CameraDirector.IntroCamerasDuration);
 
-            GameMessageServerStartGame startGameMessage = new GameMessageServerStartGame();
-            startGameMessage.StartRoundTime = 0;
+            if (!cgm.IsShutdown)
+            {
+                GameMessageServerStartGame startGameMessage = new GameMessageServerStartGame();
+                startGameMessage.StartRoundTime = 0;
 
-            startGameMessage.EndRoundTime = 150;
+                startGameMessage.EndRoundTime = 150;
 
-            gameLoading.HandleGameServerStartGame(startGameMessage);
+                gameLoading.HandleGameServerStartGame(startGameMessage);
+            }
         }
 
         public void LoadRound(string round_id, int seed_)

@@ -28,6 +28,7 @@ namespace fallguyloadr
         List<Quaternion> rotations = new();
         int playingIndex;
 
+        FallGuysCharacterController fallGuysCharacter;
         Rigidbody rb;
         MotorAgent motorAgent;
         MPGNetObject netObject;
@@ -37,6 +38,7 @@ namespace fallguyloadr
 
         void Start()
         {
+            fallGuysCharacter = GetComponent<FallGuysCharacterController>();
             rb = GetComponent<Rigidbody>();
             motorAgent = GetComponent<MotorAgent>();
             netObject = GetComponent<MPGNetObject>();
@@ -76,6 +78,7 @@ namespace fallguyloadr
                     rb.velocity = Vector3.zero;
                     transform.position = positons[playingIndex];
                     transform.rotation = rotations[playingIndex];
+                    fallGuysCharacter.SetDesiredRotation(rotations[playingIndex]);
                     motorAgent.Animator.SetBool(new HashedAnimatorString("Moving"), true);
                     movement.SetDesiredLean(1);
                     playingIndex++;
@@ -149,7 +152,6 @@ namespace fallguyloadr
             startPlaying = false;
             positons.Clear();
             rotations.Clear();
-            GetComponent<FallGuysCharacterControllerInput>().AcceptInput = true;
             LoaderBehaviour.instance.currentReplay = null;
         }
 
