@@ -36,6 +36,7 @@ namespace fallguyloadr
         MPGNetObject netObject;
         CheckpointManager checkpointManager;
         MotorFunctionMovement movement;
+        ClientGameManager cgm;
         bool qualified;
 
         void Start()
@@ -47,6 +48,8 @@ namespace fallguyloadr
             checkpointManager = FindObjectOfType<CheckpointManager>();
             movement = motorAgent.GetMotorFunction<MotorFunctionMovement>();
 
+            GlobalGameStateClient.Instance.GameStateView.GetLiveClientGameManager(out cgm);
+
             MotorFunctionPowerup motorFunctionPowerup = motorAgent.GetMotorFunction<MotorFunctionPowerup>();
 
             if (motorFunctionPowerup != null)
@@ -54,6 +57,11 @@ namespace fallguyloadr
                 motorFunctionPowerup.EquippedPowerupData._duration = -1;
                 motorFunctionPowerup.EquippedPowerupData._powerup = Resources.FindObjectsOfTypeAll<PowerupSO>()[0];
                 motorFunctionPowerup.EquippedPowerupData._hasInfiniteStacks = true;
+            }
+
+            if (Plugin.UseV11CharacterPhysics.Value)
+            {
+                SetV11Physics();
             }
         }
 
@@ -93,7 +101,27 @@ namespace fallguyloadr
             }
         }
 
-        public void RoundStarted()
+        void SetV11Physics()
+        {
+            CharacterControllerData data = fallGuysCharacter._data;
+            data.aerialTurnSpeed = 8;
+            data.getUpJumpInterruptTime = 0.1f;
+            data.getUpRollOverAngleThreshold = 40;
+            data.getUpRollOverMaxDuration = 0.4f;
+            data.getUpRollOverRotationSpeed = 6;
+            data.getUpStandUprightAngleThreshold = 30;
+            data.getUpStandUprightRotationSpeed = 4;
+            data.impactAlongFloorMultiplier = 0.85f;
+            data.impactOwnVelocityContribution = 0.5f;
+            data.impactVerticalMultiplier = 0.2f;
+            data.ragdollRepinMaxDelay = 0.3f;
+            data.ragdollRepinSpeed = 0.9f;
+            data.rollingInAirMaxSpeed = 0.2f;
+            data.stunnedMovementDelay = 0;
+            data.jumpForce = new Vector3(0, 17.5f, 0);
+        }
+
+        public void RoundStarted() // a chance to show negetive social credit with vine boom and siren if replay is edited
         {
             if (LoaderBehaviour.instance.currentReplay != null)
             {
@@ -107,6 +135,8 @@ namespace fallguyloadr
                 {
                     rotations.Add(new Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]));
                 }
+
+                SetUIState(true);
             }
             else
             {
@@ -138,6 +168,7 @@ namespace fallguyloadr
                 replay.Version = Plugin.version;
                 replay.Seed = LoaderBehaviour.seed;
                 replay.RoundID = NetworkGameData.currentGameOptions_._roundID;
+                replay.UsingV11Physics = Plugin.UseV11CharacterPhysics.Value;
                 replay.Positions = positionsList.ToArray();
                 replay.Rotations = rotationsList.ToArray();
 
@@ -152,6 +183,7 @@ namespace fallguyloadr
         void StopPlayingReplay()
         {
             startPlaying = false;
+            SetUIState(false);
             positons.Clear();
             rotations.Clear();
             LoaderBehaviour.instance.currentReplay = null;
@@ -161,6 +193,23 @@ namespace fallguyloadr
         {
             string noTagsString = Regex.Replace(inputString, "<.*?>", string.Empty);
             return Regex.Replace(noTagsString, " {2,}", " ");
+        }
+
+        void SetUIState(bool spectator)
+        {
+            cgm._inGameUiManager._switchableView._views[4].GetComponentInChildren<GameplayQualificationStatusPromptViewModel>().UpdateDisplay(true, false);
+            cgm._inGameUiManager._switchableView._views[4].GetComponentInChildren<NameTagViewModel>().UpdateDisplay(GlobalGameStateClient.Instance.GetLocalPlayerKey(), "", GlobalGameStateClient.Instance._playerProfile.CustomisationSelections);
+
+            if (spectator)
+            {
+                cgm._inGameUiManager._switchableView.SetViewVisibility(2, false);
+                cgm._inGameUiManager._switchableView.SetViewVisibility(4, true);
+            }
+            else
+            {
+                cgm._inGameUiManager._switchableView.SetViewVisibility(2, true);
+                cgm._inGameUiManager._switchableView.SetViewVisibility(4, false);
+            }
         }
 
         void OnTriggerEnter(Collider other)

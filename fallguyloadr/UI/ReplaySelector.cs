@@ -29,7 +29,7 @@ namespace fallguyloadr.UI
 
         public override string Name => "Replays";
         public override int MinWidth => 505;
-        public override int MinHeight => 160;
+        public override int MinHeight => 182;
         public override Vector2 DefaultAnchorMin => new(0.25f, 0.25f);
         public override Vector2 DefaultAnchorMax => new(0.75f, 0.75f);
 
@@ -43,6 +43,7 @@ namespace fallguyloadr.UI
         Text replayDurationText;
         Text replayRoundIDText;
         Text replaySeedText;
+        Text replayPhysicsText;
 
         protected override void ConstructPanelContent()
         {
@@ -71,6 +72,7 @@ namespace fallguyloadr.UI
             replayDurationText = UIFactory.CreateLabel(selectionsCollumn, "Replay Duration Text", "");
             replayRoundIDText = UIFactory.CreateLabel(selectionsCollumn, "Replay RoundID Text", "");
             replaySeedText = UIFactory.CreateLabel(selectionsCollumn, "Replay Seed Text", "");
+            replayPhysicsText = UIFactory.CreateLabel(selectionsCollumn, "Replay Physics Text", "");
 
             ChangeReplayInfo(null, 0);
         }
@@ -133,12 +135,14 @@ namespace fallguyloadr.UI
                 replayDurationText.text = $"Duration: {durationText}";
                 replayRoundIDText.text = $"Round ID: {replay.RoundID}";
                 replaySeedText.text = $"Seed: {replay.Seed}";
+                replayPhysicsText.text = $"11.0 Physics: {replay.UsingV11Physics}";
             }
             else
             {
-                replayDurationText.text = $"Duration:";
-                replayRoundIDText.text = $"Round ID:";
-                replaySeedText.text = $"Seed:";
+                replayDurationText.text = "Duration:";
+                replayRoundIDText.text = "Round ID:";
+                replaySeedText.text = "Seed:";
+                replayPhysicsText.text = "11.0 Physics:";
             }
         }
 

@@ -14,6 +14,8 @@ namespace fallguyloadr.JSON
 
         public string RoundID { get; set; }
 
+        public bool UsingV11Physics { get; set; }
+
         public float[][] Positions { get; set; }
 
         public float[][] Rotations { get; set; }

@@ -196,11 +196,19 @@ namespace fallguyloadr
         [HarmonyPrefix]
         static bool GameplayPowerupInventoryViewModel(GameplayPowerupInventoryViewModel __instance)
         {
-            if (Plugin.DisablePowerUpUI.Value)
+            if (Plugin.DisablePowerUpUI.Value || LoaderBehaviour.instance.currentReplay != null)
             {
                 GameObject.Destroy(__instance.gameObject);
             }
             return true;
+        }
+
+        [HarmonyPatch(typeof(CharacterDataMonitor), "CheckCharacterControllerData")] // sorry mt
+        [HarmonyPrefix]
+        static bool CheckCharacterControllerData(ref bool __result)
+        {
+            __result = true;
+            return false;
         }
     }
 }

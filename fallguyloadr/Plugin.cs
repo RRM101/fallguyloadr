@@ -45,6 +45,7 @@ namespace fallguyloadr
         public static ConfigEntry<bool> DisablePowerUpUI { get; set; }
         public static ConfigEntry<string> Theme { get; set; }
         public static ConfigEntry<int> CustomAudioVolume { get; set; }
+        public static ConfigEntry<bool> UseV11CharacterPhysics { get; set; }
 
         public override void Load()
         {
@@ -52,6 +53,7 @@ namespace fallguyloadr
             DisablePowerUpUI = Config.Bind("Config", "Disable Power-Up UI", false, "Disables Power-Up UI.");
             Theme = Config.Bind("Config", "Theme", "Default", "Custom theme for the Main Menu and the Round Loading Screen.");
             CustomAudioVolume = Config.Bind("Config", "Custom Audio Volume", 50, "Volume for custom audio. (Max 100)");
+            UseV11CharacterPhysics = Config.Bind("Config", "Use 11.0 Physics", false, "Enables the physics changes made in Fall Guys versions 10.9 and 11.0");
 
             ClassInjector.RegisterTypeInIl2Cpp<LoaderBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<FallGuyBehaviour>();
