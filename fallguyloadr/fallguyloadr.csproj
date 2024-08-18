@@ -44,6 +44,9 @@
     <Reference Include="FallGuys.Player.Protocol.Client">
       <HintPath>C:\Users\rrm1\FallGuys10.8\BepInEx\interop\FallGuys.Player.Protocol.Client.dll</HintPath>
     </Reference>
+    <Reference Include="FGChaos">
+      <HintPath>..\..\..\..\FallGuys10.8\BepInEx\plugins\FGChaos\FGChaos.dll</HintPath>
+    </Reference>
     <Reference Include="FMODUnity">
       <HintPath>C:\Users\rrm1\FallGuys10.8\BepinEx\interop\FMODUnity.dll</HintPath>
     </Reference>

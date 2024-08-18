@@ -16,6 +16,8 @@ namespace fallguyloadr.JSON
 
         public bool UsingV11Physics { get; set; }
 
+        public bool UsingFGChaos { get; set; }
+
         public float[][] Positions { get; set; }
 
         public float[][] Rotations { get; set; }

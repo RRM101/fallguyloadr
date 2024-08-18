@@ -34,6 +34,7 @@ namespace fallguyloadr
             {
                 currentReplay = replay;
                 LoaderBehaviour.instance.LoadRound(currentReplay.RoundID, currentReplay.Seed);
+                FGChaos.Plugin.tempDisable = true;
             }
         }
 
@@ -43,6 +44,7 @@ namespace fallguyloadr
             SetUIState(false);
             currentReplay = null;
             cgm = null;
+            FGChaos.Plugin.tempDisable = false;
         }
 
         public void RoundStarted()

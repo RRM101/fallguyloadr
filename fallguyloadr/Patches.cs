@@ -133,7 +133,7 @@ namespace fallguyloadr
                 __instance.CloseScreen();
                 AudioManager.SetGlobalParam(AudioManager.EventMasterData.InGameMenuParam, 0);
                 GlobalGameStateClient.Instance._gameStateMachine.ReplaceCurrentState(new StateMainMenu(GlobalGameStateClient.Instance._gameStateMachine, GlobalGameStateClient.Instance.CreateClientGameStateData(), false).Cast<GameStateMachine.IGameState>());
-                ReplayManager.Instance.currentReplay = null;
+                ReplayManager.Instance.StopPlayingReplay();
                 LoaderBehaviour.instance.canLoadLevel = false;
             }
             else

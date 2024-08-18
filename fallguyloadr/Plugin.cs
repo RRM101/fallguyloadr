@@ -35,7 +35,7 @@ using Levels.Hoops;
 
 namespace fallguyloadr
 {
-    [BepInDependency("org.rrm1.fgchaos")]
+    [BepInDependency("org.rrm1.fgchaos", "1.1.0")]
     [BepInPlugin("org.rrm1.fallguyloadr", "fallguyloadr", version)]
     public class Plugin : BasePlugin
     {

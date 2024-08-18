@@ -160,6 +160,7 @@ namespace fallguyloadr
                 replay.Seed = LoaderBehaviour.seed;
                 replay.RoundID = NetworkGameData.currentGameOptions_._roundID;
                 replay.UsingV11Physics = Plugin.UseV11CharacterPhysics.Value;
+                replay.UsingFGChaos = FGChaos.ChaosPluginBehaviour.chaosInstance != null;
                 replay.Positions = positionsList.ToArray();
                 replay.Rotations = rotationsList.ToArray();
 
