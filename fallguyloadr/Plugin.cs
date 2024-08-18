@@ -91,7 +91,7 @@ namespace fallguyloadr
         public ClientGameManager cgm;
         UIBase UI;
         public bool canLoadLevel = true;
-        public Replay currentReplay;
+        //public Replay currentReplay;
 
         void Awake()
         {
@@ -110,6 +110,8 @@ namespace fallguyloadr
                 Force_Unlock_Mouse = true,
                 Unhollowed_Modules_Folder = Paths.BepInExRootPath + "/interop"
             });
+
+            new ReplayManager();
         }
 
         public void OnEnable()
@@ -353,18 +355,6 @@ namespace fallguyloadr
                 if (SceneManager.GetActiveScene().name == round.GetSceneName())
                 {
                     SceneManager.LoadScene("Transition");
-                    /*ModalMessageData modalMessageData = new ModalMessageData() // this is for v10.9
-                    {
-                        Title = "fallguyloadr - INFO",
-                        Message = "Cannot load level with the same scene.",
-                        LocaliseTitle = UIModalMessage.LocaliseOption.NotLocalised,
-                        LocaliseMessage = UIModalMessage.LocaliseOption.NotLocalised,
-                        ModalType = UIModalMessage.ModalType.MT_OK
-                    };
-
-                    PopupManager.Instance.Show(PopupInteractionType.Info, modalMessageData);
-
-                    return;*/
                 }
 
                 NetworkGameData.SetGameOptionsFromRoundData(round, null);
@@ -404,7 +394,7 @@ namespace fallguyloadr
 
         public void LoadRound(string round_id)
         {
-            LoadRound(round_id, DateTime.Now.Millisecond);
+            LoadRound(round_id, (int)DateTime.Now.Ticks);
         }
 
         public void LoadRound(Round round)

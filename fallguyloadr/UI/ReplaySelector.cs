@@ -120,16 +120,16 @@ namespace fallguyloadr.UI
 
             if (replay != null)
             {
-                TimeSpan timespan = TimeSpan.FromSeconds(replay.Positions.Length / 50);
+                TimeSpan timespan = TimeSpan.FromMilliseconds(replay.Positions.Length * 1000 / 50);
                 string durationText;
 
                 if (timespan.Minutes > 0)
                 {
-                    durationText = $"{timespan.Minutes}m {timespan.Seconds}s";
+                    durationText = $"{timespan.Minutes}m {timespan.Seconds}s {timespan.Milliseconds}ms";
                 }
                 else
                 {
-                    durationText = $"{timespan.Seconds}s";
+                    durationText = $"{timespan.Seconds}s {timespan.Milliseconds}ms";
                 }
 
                 replayDurationText.text = $"Duration: {durationText}";
@@ -148,10 +148,9 @@ namespace fallguyloadr.UI
 
         void PlayReplay()
         {
-            if (selectedReplay != null && LoaderBehaviour.instance.canLoadLevel)
+            if (selectedReplay != null)
             {
-                LoaderBehaviour.instance.currentReplay = selectedReplay;
-                LoaderBehaviour.instance.LoadRound(selectedReplay.RoundID, selectedReplay.Seed);
+                ReplayManager.Instance.PlayReplay(selectedReplay);
             }
         }
     }

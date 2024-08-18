@@ -99,8 +99,7 @@ namespace fallguyloadr
         static bool ClientGameManagerOnIntroCountdownEnded(ClientGameManager __instance)
         {
             LoaderBehaviour.instance.FixObstacles();
-            FallGuyBehaviour fallGuyBehaviour = LoaderBehaviour.instance.fallguy.GetComponent<FallGuyBehaviour>();
-            fallGuyBehaviour.RoundStarted();
+            ReplayManager.Instance.RoundStarted();
             LoaderBehaviour.instance.canLoadLevel = true;
             return true;
         }
@@ -134,7 +133,7 @@ namespace fallguyloadr
                 __instance.CloseScreen();
                 AudioManager.SetGlobalParam(AudioManager.EventMasterData.InGameMenuParam, 0);
                 GlobalGameStateClient.Instance._gameStateMachine.ReplaceCurrentState(new StateMainMenu(GlobalGameStateClient.Instance._gameStateMachine, GlobalGameStateClient.Instance.CreateClientGameStateData(), false).Cast<GameStateMachine.IGameState>());
-                LoaderBehaviour.instance.currentReplay = null;
+                ReplayManager.Instance.currentReplay = null;
                 LoaderBehaviour.instance.canLoadLevel = false;
             }
             else
@@ -196,7 +195,7 @@ namespace fallguyloadr
         [HarmonyPrefix]
         static bool GameplayPowerupInventoryViewModel(GameplayPowerupInventoryViewModel __instance)
         {
-            if (Plugin.DisablePowerUpUI.Value || LoaderBehaviour.instance.currentReplay != null)
+            if (Plugin.DisablePowerUpUI.Value || ReplayManager.Instance.currentReplay != null)
             {
                 GameObject.Destroy(__instance.gameObject);
             }

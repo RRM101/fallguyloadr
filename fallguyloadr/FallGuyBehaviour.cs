@@ -25,7 +25,6 @@ namespace fallguyloadr
 {
     public class FallGuyBehaviour : MonoBehaviour
     {
-        public bool startPlaying;
         List<Vector3> positons = new();
         List<Quaternion> rotations = new();
         int playingIndex;
@@ -63,6 +62,21 @@ namespace fallguyloadr
             {
                 SetV11Physics();
             }
+
+            if (ReplayManager.Instance.currentReplay != null)
+            {
+                Replay replay = ReplayManager.Instance.currentReplay;
+                foreach (float[] position in replay.Positions)
+                {
+                    positons.Add(new Vector3(position[0], position[1], position[2]));
+                }
+
+                foreach (float[] rotation in replay.Rotations)
+                {
+                    rotations.Add(new Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]));
+                }
+                transform.position = positons[0];
+            }
         }
 
         void Update()
@@ -75,13 +89,15 @@ namespace fallguyloadr
 
         void FixedUpdate()
         {
-            if (startPlaying)
+            if (ReplayManager.Instance.startPlaying)
             {
-                if (LoaderBehaviour.instance.currentReplay != null)
+                if (ReplayManager.Instance.currentReplay != null)
                 {
                     if (positons.Count-1 < playingIndex | rotations.Count-1 < playingIndex)
                     {
-                        StopPlayingReplay();
+                        ReplayManager.Instance.StopPlayingReplay();
+                        positons.Clear();
+                        rotations.Clear();
                         return;
                     }
 
@@ -121,34 +137,9 @@ namespace fallguyloadr
             data.jumpForce = new Vector3(0, 17.5f, 0);
         }
 
-        public void RoundStarted() // a chance to show negetive social credit with vine boom and siren if replay is edited
-        {
-            if (LoaderBehaviour.instance.currentReplay != null)
-            {
-                Replay replay = LoaderBehaviour.instance.currentReplay;
-                foreach (float[] position in replay.Positions)
-                {
-                    positons.Add(new Vector3(position[0], position[1], position[2]));
-                }
-
-                foreach (float[] rotation in replay.Rotations)
-                {
-                    rotations.Add(new Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]));
-                }
-
-                SetUIState(true);
-            }
-            else
-            {
-                positons.Clear();
-                rotations.Clear();
-            }
-            startPlaying = true;
-        }
-
         public void StopRecording(bool save)
         {
-            startPlaying = false;
+            ReplayManager.Instance.startPlaying = false;
             if (save)
             {
                 List<float[]> positionsList = new();
@@ -180,36 +171,10 @@ namespace fallguyloadr
             }
         }
 
-        void StopPlayingReplay()
-        {
-            startPlaying = false;
-            SetUIState(false);
-            positons.Clear();
-            rotations.Clear();
-            LoaderBehaviour.instance.currentReplay = null;
-        }
-
         string RemoveIndentation(string inputString)
         {
             string noTagsString = Regex.Replace(inputString, "<.*?>", string.Empty);
             return Regex.Replace(noTagsString, " {2,}", " ");
-        }
-
-        void SetUIState(bool spectator)
-        {
-            cgm._inGameUiManager._switchableView._views[4].GetComponentInChildren<GameplayQualificationStatusPromptViewModel>().UpdateDisplay(true, false);
-            cgm._inGameUiManager._switchableView._views[4].GetComponentInChildren<NameTagViewModel>().UpdateDisplay(GlobalGameStateClient.Instance.GetLocalPlayerKey(), "", GlobalGameStateClient.Instance._playerProfile.CustomisationSelections);
-
-            if (spectator)
-            {
-                cgm._inGameUiManager._switchableView.SetViewVisibility(2, false);
-                cgm._inGameUiManager._switchableView.SetViewVisibility(4, true);
-            }
-            else
-            {
-                cgm._inGameUiManager._switchableView.SetViewVisibility(2, true);
-                cgm._inGameUiManager._switchableView.SetViewVisibility(4, false);
-            }
         }
 
         void OnTriggerEnter(Collider other)
@@ -229,7 +194,7 @@ namespace fallguyloadr
             if ((endZoneVFXTrigger != null || objectiveReachEndZone != null) && !qualified)
             {
                 qualified = true;
-                if (LoaderBehaviour.instance.currentReplay == null)
+                if (ReplayManager.Instance.currentReplay == null)
                 {
                     StopRecording(true);
                 }
