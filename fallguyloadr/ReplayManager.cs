@@ -6,6 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using fallguyloadr.JSON;
+using System.Text.Json;
+using System.Security.Cryptography;
+using UnityEngine;
 
 namespace fallguyloadr
 {
@@ -22,9 +25,20 @@ namespace fallguyloadr
                 instance = this;
             }
         }
+        
+        private string currentReplayCalculatedChecksum;
 
         public bool startPlaying = false;
         public Replay currentReplay;
+        public bool hashCheckFailed 
+        {
+            get
+            {
+                if (currentReplay != null)
+                    return currentReplay.Checksum != currentReplayCalculatedChecksum;
+                return false;
+            }
+        }
 
         ClientGameManager cgm;
 
@@ -32,7 +46,9 @@ namespace fallguyloadr
         {
             if (replay != null && LoaderBehaviour.instance.canLoadLevel)
             {
+                StopPlayingReplay();
                 currentReplay = replay;
+                currentReplayCalculatedChecksum = CalculateReplayChecksum(replay);
                 LoaderBehaviour.instance.LoadRound(currentReplay.RoundID, currentReplay.Seed);
                 FGChaos.Plugin.tempDisable = true;
             }
@@ -43,6 +59,7 @@ namespace fallguyloadr
             startPlaying = false;
             SetUIState(false);
             currentReplay = null;
+            currentReplayCalculatedChecksum = "";
             cgm = null;
             FGChaos.Plugin.tempDisable = false;
         }
@@ -61,7 +78,9 @@ namespace fallguyloadr
         {
             if (cgm != null)
             {
-                cgm._inGameUiManager._switchableView._views[4].GetComponentInChildren<GameplayQualificationStatusPromptViewModel>().UpdateDisplay(true, false);
+                GameplayQualificationStatusPromptViewModel gameplayQualificationStatus = cgm._inGameUiManager._switchableView._views[4].GetComponentInChildren<GameplayQualificationStatusPromptViewModel>();
+                gameplayQualificationStatus.UpdateDisplay(true, false);
+                gameplayQualificationStatus.transform.FindChild("GameObject/LowerLayoutRoot/QualifiedLayout/Text").GetComponent<LocalisedStaticLabel>().SetLocalisationKey("fallguyloadr_replay");
                 cgm._inGameUiManager._switchableView._views[4].GetComponentInChildren<NameTagViewModel>().UpdateDisplay(GlobalGameStateClient.Instance.GetLocalPlayerKey(), "", GlobalGameStateClient.Instance._playerProfile.CustomisationSelections);
 
                 if (spectator)
@@ -75,6 +94,40 @@ namespace fallguyloadr
                     cgm._inGameUiManager._switchableView.SetViewVisibility(4, false);
                 }
             }
+        }
+
+        public static string CalculateReplayChecksum(Replay replay)
+        {
+            List<object> data = new()
+            {
+                replay.Version,
+                replay.Seed,
+                replay.RoundID,
+                replay.UsingV11Physics,
+                replay.UsingFGChaos
+            };
+
+            foreach (float[] position in replay.Positions)
+            {
+                data.Add(position);
+            }
+
+            foreach (float[] rotation in replay.Rotations)
+            {
+                data.Add(rotation);
+            }
+
+            SHA256 sha256 = SHA256.Create();
+
+            byte[] sha256bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data.ToArray())));
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (byte b in sha256bytes)
+            {
+                sb.Append(b.ToString("x2"));
+            }
+            return sb.ToString();
         }
     }
 }

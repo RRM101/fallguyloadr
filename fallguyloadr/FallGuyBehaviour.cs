@@ -79,6 +79,14 @@ namespace fallguyloadr
             }
         }
 
+        void OnGUI()
+        {
+            if (ReplayManager.Instance.hashCheckFailed)
+            {
+                GUI.Label(new Rect(5, 5, Screen.width, Screen.height), "<size=25><color=red>Hash check failed!</color></size>");
+            }
+        }
+
         void Update()
         {
             if (transform.position.y < -50 || Input.GetKeyDown(KeyCode.R))
@@ -163,6 +171,7 @@ namespace fallguyloadr
                 replay.UsingFGChaos = FGChaos.ChaosPluginBehaviour.chaosInstance != null;
                 replay.Positions = positionsList.ToArray();
                 replay.Rotations = rotationsList.ToArray();
+                replay.Checksum = ReplayManager.CalculateReplayChecksum(replay);
 
                 string replayJson = JsonSerializer.Serialize<Replay>(replay);
 

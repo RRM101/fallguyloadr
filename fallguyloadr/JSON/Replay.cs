@@ -21,5 +21,7 @@ namespace fallguyloadr.JSON
         public float[][] Positions { get; set; }
 
         public float[][] Rotations { get; set; }
+
+        public string Checksum { get; set; }
     }
 }

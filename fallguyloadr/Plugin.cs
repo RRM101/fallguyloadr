@@ -114,7 +114,7 @@ namespace fallguyloadr
             new ReplayManager();
         }
 
-        public void OnEnable()
+        void OnEnable()
         {
             SceneManager.add_sceneLoaded((Action<Scene, LoadSceneMode>)OnSceneLoaded);
         }
@@ -136,18 +136,19 @@ namespace fallguyloadr
             }
         }
 
-        public void AddCMSStringKeys()
+        void AddCMSStringKeys()
         {
             Dictionary<string, string> stringsToAdd = new Dictionary<string, string>()
             {
                 {"fallguyloadr_create", "CREATE"},
-                {"fallguyloadr_skin_presets_create_popup_additional_message", "Your current Customisations will be used."}
+                {"fallguyloadr_skin_presets_create_popup_additional_message", "Your current Customisations will be used."},
+                {"fallguyloadr_replay", "REPLAY"}
             };
 
             foreach (var toAdd in stringsToAdd) AddNewStringToCMS(toAdd.Key, toAdd.Value);
         }
 
-        public void AddNewStringToCMS(string key, string value)
+        void AddNewStringToCMS(string key, string value)
         {
             if (!CMSLoader.Instance._localisedStrings._localisedStrings.ContainsKey(key))
             {
@@ -155,7 +156,7 @@ namespace fallguyloadr
             }
         }
 
-        public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             if (!(scene.name.Contains("Fraggle") || scene.name.Contains("Editor")))
             {
@@ -499,6 +500,10 @@ namespace fallguyloadr
                 LoadCustomisations();
             }
 
+            GameObject.Find("UICanvas_Client_V2(Clone)/Default/Topbar_Prime(Clone)/SafeArea/TabsHorizontalLayout/SeasonPassButton").SetActive(false);
+            GameObject.Find("UICanvas_Client_V2(Clone)/Default/Topbar_Prime(Clone)/SafeArea/TabsHorizontalLayout/ShopButton").SetActive(false);
+            GameObject.Find("UICanvas_Client_V2(Clone)/Default/MainMenuBuilder(Clone)/MainScreensParent/Menu_Screen_Level_Editor/Menu_UI_LevelEditor(Clone)/Container_NotBanned/Container_Buttons/UI_Menu_LevelEditor_MainCarrousel/Load Button").SetActive(false);
+
             if (Plugin.Theme.Value != "Default")
             {
                 GameObject background = GameObject.Find("Generic_UI_SeasonS10Background_Canvas_Variant");
@@ -507,7 +512,7 @@ namespace fallguyloadr
 
             try // i just don't care
             {
-                FindObjectOfType<TitleScreenViewModel>().OnLoginSucceeded();
+                FindObjectOfType<TitleScreenViewModel>().OnLoginSucceeded();    
             }
             catch { }
             FindObjectOfType<MainMenuManager>().ApplyOutfit();
@@ -529,6 +534,8 @@ namespace fallguyloadr
             VictoryOption[] victoryOptions = Resources.FindObjectsOfTypeAll<VictoryOption>();
             CostumeOption[] costumeOptions = Resources.FindObjectsOfTypeAll<CostumeOption>();
             EmotesOption[] emotearray;
+            List<Nickname> nicknames = new();
+
             List<EmotesOption> emotelist = new List<EmotesOption>();
             HashSet<int> uniqueEmotes = new HashSet<int>();
             while (uniqueEmotes.Count < 4)
@@ -557,6 +564,14 @@ namespace fallguyloadr
                 }
             }
 
+            foreach (Nickname nickname in CMSLoader.Instance.CMSData.Nicknames.Values)
+            {
+                nicknames.Add(nickname);
+            }
+
+            NicknameOption nicknameOption = new NicknameOption();
+            nicknameOption.SetCMSData(nicknames[UnityEngine.Random.Range(0, nicknames.Count)]);
+
             customisationSelections.EmoteBottomOption = emotearray[2];
             customisationSelections.EmoteLeftOption = emotearray[3];
             customisationSelections.EmoteRightOption = emotearray[1];
@@ -566,6 +581,7 @@ namespace fallguyloadr
             customisationSelections.FaceplateOption = faceplateOptions[UnityEngine.Random.Range(0, faceplateOptions.Length)];
             customisationSelections.NameplateOption = nameplateOptions[UnityEngine.Random.Range(0, nameplateOptions.Length)];
             customisationSelections.VictoryPoseOption = victoryOptions[UnityEngine.Random.Range(0, victoryOptions.Length)];
+            customisationSelections.NicknameOption = nicknameOption;
         }
 
         public static Sprite PNGtoSprite(string path)
