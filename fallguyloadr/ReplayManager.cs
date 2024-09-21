@@ -98,28 +98,17 @@ namespace fallguyloadr
 
         public static string CalculateReplayChecksum(Replay replay)
         {
-            List<object> data = new()
-            {
-                replay.Version,
-                replay.Seed,
-                replay.RoundID,
-                replay.UsingV11Physics,
-                replay.UsingFGChaos
-            };
-
-            foreach (float[] position in replay.Positions)
-            {
-                data.Add(position);
-            }
-
-            foreach (float[] rotation in replay.Rotations)
-            {
-                data.Add(rotation);
-            }
+            Replay replayNoChecksum = new();
+            replayNoChecksum.Positions = replay.Positions;
+            replayNoChecksum.Rotations = replay.Rotations;
+            replayNoChecksum.Version = replay.Version;
+            replayNoChecksum.Seed = replay.Seed;
+            replayNoChecksum.RoundID = replay.RoundID;
+            replayNoChecksum.UsingFGChaos = replay.UsingFGChaos;
 
             SHA256 sha256 = SHA256.Create();
 
-            byte[] sha256bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data.ToArray())));
+            byte[] sha256bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(replayNoChecksum)));
 
             StringBuilder sb = new StringBuilder();
 

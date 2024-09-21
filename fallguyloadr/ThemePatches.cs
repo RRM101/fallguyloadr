@@ -42,10 +42,13 @@ namespace fallguyloadr
         {
             MainMenuCustomAudio mainMenuCustomAudio = __instance.GetComponent<MainMenuCustomAudio>();
 
-            if (mainMenuCustomAudio.waveOut != null)
+            if (mainMenuCustomAudio != null)
             {
-                mainMenuCustomAudio.stop = true;
-                mainMenuCustomAudio.waveOut.Dispose();
+                if (mainMenuCustomAudio.waveOut != null)
+                {
+                    mainMenuCustomAudio.stop = true;
+                    mainMenuCustomAudio.waveOut.Dispose();
+                }
             }
 
             return false;

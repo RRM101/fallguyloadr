@@ -2,6 +2,7 @@
 using fallguyloadr.JSON;
 using FGClient;
 using FGClient.UI;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,6 +31,13 @@ namespace fallguyloadr.UI
 
         public static ThemeSelector instance;
 
+        enum ThemeReloadType
+        {
+            Nothing,
+            Patch,
+            Unpatch
+        }
+
         Sprite patternSprite = LoaderBehaviour.PNGtoSprite($"{Paths.PluginPath}/fallguyloadr/Themes/{LoaderBehaviour.instance.currentTheme.Pattern}");
         Sprite linearGraidentImage;
 
@@ -47,6 +55,8 @@ namespace fallguyloadr.UI
         GameObject bgRow;
         Image gradient;
         Image image;
+
+        ThemeReloadType themeReloadType = ThemeReloadType.Nothing;
 
         protected override void ConstructPanelContent()
         {
@@ -107,34 +117,39 @@ namespace fallguyloadr.UI
         {
             if (LoaderBehaviour.instance.canLoadLevel && pickedThemeName != null)
             {
+                Plugin.Logs.LogInfo($"Switching to theme {pickedThemeName} from {Plugin.Theme.Value}");
+
+                Action<bool> action = ReloadGame;
+
                 if (pickedThemeName != "Default" && Plugin.Theme.Value != "Default")
                 {
                     Plugin.Theme.Value = pickedThemeName + ".json";
-
-                    Action<bool> action = ReloadGame;
-
-                    ModalMessageData modalMessageData = new ModalMessageData()
-                    {
-                        Title = "fallguyloadr - Theme Selector",
-                        Message = "The game will now reload to apply the changes.",
-                        LocaliseTitle = UIModalMessage.LocaliseOption.NotLocalised,
-                        LocaliseMessage = UIModalMessage.LocaliseOption.NotLocalised,
-                        ModalType = UIModalMessage.ModalType.MT_OK,
-                        OnCloseButtonPressed = action
-                    };
-
-                    PopupManager.Instance.Show(PopupInteractionType.Info, modalMessageData);
+                    themeReloadType = Harmony.HasAnyPatches("ThemePatches") ? ThemeReloadType.Nothing : ThemeReloadType.Patch;
                 }
                 else if (Plugin.Theme.Value == "Default")
                 {
                     Plugin.Theme.Value = pickedThemeName + ".json";
-                    QuitPopup();
+                    //Harmony.CreateAndPatchAll(typeof(ThemePatches), "ThemePatches");
+                    themeReloadType = ThemeReloadType.Patch;
                 }
                 else
                 {
                     Plugin.Theme.Value = "Default";
-                    QuitPopup();
+                    //Harmony.UnpatchID("ThemePatches");
+                    themeReloadType = ThemeReloadType.Unpatch;
                 }
+
+                ModalMessageData modalMessageData = new ModalMessageData()
+                {
+                    Title = "fallguyloadr - Theme Selector",
+                    Message = "The game will now reload to apply the changes.",
+                    LocaliseTitle = UIModalMessage.LocaliseOption.NotLocalised,
+                    LocaliseMessage = UIModalMessage.LocaliseOption.NotLocalised,
+                    ModalType = UIModalMessage.ModalType.MT_OK,
+                    OnCloseButtonPressed = action
+                };
+
+                PopupManager.Instance.Show(PopupInteractionType.Info, modalMessageData);
             }
         }
 
@@ -145,7 +160,6 @@ namespace fallguyloadr.UI
 
         void QuitPopup()
         {
-
             LoaderBehaviour.instance.canLoadLevel = false;
 
             Action<bool> action = Quit;
@@ -167,11 +181,30 @@ namespace fallguyloadr.UI
         {
             GlobalGameStateClient.Instance.ForceMainMenuSceneReload = true;
             LoaderBehaviour.instance.LoadTheme();
+
             if (SceneManager.GetActiveScene().name == "MainMenu")
             {
-                GameObject background = GameObject.Find("Generic_UI_SeasonS10Background_Canvas_Variant");
-                LoaderBehaviour.instance.SetTheme(LoaderBehaviour.instance.currentTheme, background);
+                MainMenuManager mainMenuManager = GameObject.FindObjectOfType<MainMenuManager>();
+                if (Plugin.Theme.Value != "Default")
+                {
+                    GameObject background = GameObject.Find("Generic_UI_SeasonS10Background_Canvas_Variant");
+                    LoaderBehaviour.instance.SetTheme(LoaderBehaviour.instance.currentTheme, background);
+                }
+
+                switch (themeReloadType)
+                {
+                    case ThemeReloadType.Patch:
+                        mainMenuManager.StopMusic();
+                        Harmony.CreateAndPatchAll(typeof(ThemePatches), "ThemePatches");
+                        break;
+                    case ThemeReloadType.Unpatch:
+                        mainMenuManager.StopMusic();
+                        Harmony.UnpatchID("ThemePatches");
+                        break;
+                }
             }
+
+
             GlobalGameStateClient.Instance.ReloadGame(false);
         }
 

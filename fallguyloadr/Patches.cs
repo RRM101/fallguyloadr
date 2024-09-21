@@ -193,7 +193,7 @@ namespace fallguyloadr
 
         [HarmonyPatch(typeof(GameplayPowerupInventoryViewModel), "Initialise")]
         [HarmonyPrefix]
-        static bool GameplayPowerupInventoryViewModel(GameplayPowerupInventoryViewModel __instance)
+        static bool GameplayPowerupInventoryViewModelInitialise(GameplayPowerupInventoryViewModel __instance)
         {
             if (Plugin.DisablePowerUpUI.Value || ReplayManager.Instance.currentReplay != null)
             {
@@ -208,6 +208,15 @@ namespace fallguyloadr
         {
             __result = true;
             return false;
+        }
+
+        [HarmonyPatch(typeof(StateVictoryScreen), "Initialise")]
+        [HarmonyPatch(typeof(StateMainMenu), "Initialise")]
+        [HarmonyPrefix]
+        static bool StateMainMenuInitialise()
+        {
+            ReplayManager.Instance.StopPlayingReplay();
+            return true;
         }
     }
 }

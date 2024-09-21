@@ -32,16 +32,20 @@ using System.IO;
 using fallguyloadr.JSON;
 using UnityEngine.UI;
 using Levels.Hoops;
+using BepInEx.Logging;
 
 namespace fallguyloadr
 {
-    [BepInDependency("org.rrm1.fgchaos", "1.1.0")]
+    [BepInDependency("org.rrm1.fgchaos", "1.2.0")]
     [BepInPlugin("org.rrm1.fallguyloadr", "fallguyloadr", version)]
     public class Plugin : BasePlugin
     {
-        public const string version = "1.1.0";
+        public const string version = "1.2.0";
+
+        public static ManualLogSource Logs = new("fallguyloadr");
 
         public static ConfigEntry<string> Username { get; set; }
+        public static ConfigEntry<float> LoadingGameScreenDelay { get; set; }
         public static ConfigEntry<bool> DisablePowerUpUI { get; set; }
         public static ConfigEntry<string> Theme { get; set; }
         public static ConfigEntry<int> CustomAudioVolume { get; set; }
@@ -50,10 +54,13 @@ namespace fallguyloadr
         public override void Load()
         {
             Username = Config.Bind("Config", "Username", Environment.UserName, "Your username which gets displayed in-game.");
+            LoadingGameScreenDelay = Config.Bind("Config", "Waiting For Players Delay", 5f, "Amount of time in the Waiting For Players screen.");
             DisablePowerUpUI = Config.Bind("Config", "Disable Power-Up UI", false, "Disables Power-Up UI.");
             Theme = Config.Bind("Config", "Theme", "Default", "Custom theme for the Main Menu and the Round Loading Screen.");
             CustomAudioVolume = Config.Bind("Config", "Custom Audio Volume", 50, "Volume for custom audio. (Max 100)");
             UseV11CharacterPhysics = Config.Bind("Config", "Use 11.0 Physics", false, "Enables the physics changes made in Fall Guys versions 10.9 and 11.0");
+
+            BepInEx.Logging.Logger.Sources.Add(Logs);
 
             ClassInjector.RegisterTypeInIl2Cpp<LoaderBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<FallGuyBehaviour>();
@@ -68,7 +75,7 @@ namespace fallguyloadr
 
             if (Theme.Value != "Default")
             {
-                Harmony.CreateAndPatchAll(typeof(ThemePatches));
+                Harmony.CreateAndPatchAll(typeof(ThemePatches), "ThemePatches");
             }
 
             GameObject obj = new GameObject("Loader Behaviour");
@@ -329,17 +336,19 @@ namespace fallguyloadr
 
         IEnumerator StartRoundCoroutine()
         {
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(Plugin.LoadingGameScreenDelay.Value);
             gameLoading.OnServerRequestStartIntroCameras();
             ClientGameManager cgm = gameLoading._clientGameManager;
             yield return new WaitForSeconds(cgm.CameraDirector.IntroCamerasDuration);
+
+            Round round = CMSLoader.Instance.CMSData.Rounds[NetworkGameData.currentGameOptions_._roundID];            
 
             if (!cgm.IsShutdown)
             {
                 GameMessageServerStartGame startGameMessage = new GameMessageServerStartGame();
                 startGameMessage.StartRoundTime = 0;
 
-                startGameMessage.EndRoundTime = 150;
+                startGameMessage.EndRoundTime = round.GameRules.Duration;
 
                 gameLoading.HandleGameServerStartGame(startGameMessage);
             }
@@ -520,6 +529,7 @@ namespace fallguyloadr
             PlayerDetailsService playerDetailsService = PlatformServices.Current.PlayerDetailsService.Cast<PlayerDetailsService>();
             PlayerDetailsService.PlayerDetails playerDetails = new PlayerDetailsService.PlayerDetails(PlayerDetailsService.NameSource.InGame, false, "win", GlobalGameStateClient.Instance.GetLocalPlayerName(), GlobalGameStateClient.Instance.GetLocalPlayerName(), PlayerNameType.PlatformAccountName, false);
             playerDetailsService._playerDict.Add(GlobalGameStateClient.Instance.GetLocalPlayerKey(), playerDetails);
+            GameObject.Find("UICanvas_Client_V2(Clone)/Default/MainMenuBuilder(Clone)/MainScreensParent/Menu_Screen_Main/Prime_UI_MainMenu_Canvas(Clone)/SafeArea/BottomLeft_Group/AnimContainer/PB_UI_NameTag").GetComponent<NameTagViewModel>().UpdateDisplayWithLocalPlayer();
         }
 
         void LoadCustomisations()
@@ -635,6 +645,17 @@ namespace fallguyloadr
                     {
                         SetTheme(currentTheme, loadingGameScreen.transform.GetChild(1).GetChild(0).gameObject);
                     }
+                }
+
+                if (!File.Exists($"{Paths.PluginPath}/fallguyloadr/Themes/{currentTheme.Music}"))
+                {
+                    if (SceneManager.GetActiveScene().name == "MainMenu")
+                    {
+                        MainMenuManager mainMenuManager = GameObject.FindObjectOfType<MainMenuManager>();
+                        mainMenuManager.StopMusic();
+                    }
+                    Plugin.Logs.LogInfo("Theme Music File does not exist, unpatching...");
+                    Harmony.UnpatchID("ThemePatches");
                 }
             }
             else
