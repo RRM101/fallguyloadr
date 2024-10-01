@@ -46,6 +46,7 @@ namespace fallguyloadr
 
         public static ConfigEntry<string> Username { get; set; }
         public static ConfigEntry<float> LoadingGameScreenDelay { get; set; }
+        public static ConfigEntry<bool> SkipRoundIntro { get; set; }
         public static ConfigEntry<bool> DisablePowerUpUI { get; set; }
         public static ConfigEntry<string> Theme { get; set; }
         public static ConfigEntry<int> CustomAudioVolume { get; set; }
@@ -55,6 +56,7 @@ namespace fallguyloadr
         {
             Username = Config.Bind("Config", "Username", Environment.UserName, "Your username which gets displayed in-game.");
             LoadingGameScreenDelay = Config.Bind("Config", "Waiting For Players Delay", 5f, "Amount of time in the Waiting For Players screen.");
+            SkipRoundIntro = Config.Bind("Config", "Skip Round Intro", false, "Skips the round intro camera.");
             DisablePowerUpUI = Config.Bind("Config", "Disable Power-Up UI", false, "Disables Power-Up UI.");
             Theme = Config.Bind("Config", "Theme", "Default", "Custom theme for the Main Menu and the Round Loading Screen.");
             CustomAudioVolume = Config.Bind("Config", "Custom Audio Volume", 50, "Volume for custom audio. (Max 100)");
@@ -339,7 +341,7 @@ namespace fallguyloadr
             yield return new WaitForSeconds(Plugin.LoadingGameScreenDelay.Value);
             gameLoading.OnServerRequestStartIntroCameras();
             ClientGameManager cgm = gameLoading._clientGameManager;
-            yield return new WaitForSeconds(cgm.CameraDirector.IntroCamerasDuration);
+            yield return new WaitForSeconds(Plugin.SkipRoundIntro.Value ? 0 : cgm.CameraDirector.IntroCamerasDuration);
 
             Round round = CMSLoader.Instance.CMSData.Rounds[NetworkGameData.currentGameOptions_._roundID];            
 

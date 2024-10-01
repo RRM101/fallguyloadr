@@ -141,7 +141,7 @@ namespace fallguyloadr
                 replay.Seed = LoaderBehaviour.seed;
                 replay.RoundID = NetworkGameData.currentGameOptions_._roundID;
                 replay.UsingV11Physics = FallGuyBehaviour.usingV11Physics;
-                replay.UsingFGChaos = FGChaos.ChaosPluginBehaviour.chaosInstance != null;
+                replay.UsingFGChaos = FGChaos.ChaosManager.chaosInstance != null;
                 replay.Positions = positions;
                 replay.Rotations = rotations;
                 replay.Checksum = CalculateReplayChecksum(replay);
