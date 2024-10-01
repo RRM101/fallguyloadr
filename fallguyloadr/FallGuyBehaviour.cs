@@ -25,6 +25,8 @@ namespace fallguyloadr
 {
     public class FallGuyBehaviour : MonoBehaviour
     {
+        public static bool usingV11Physics = false;
+
         List<Vector3> positions = new();
         List<Quaternion> rotations = new();
         int playingIndex;
@@ -35,7 +37,6 @@ namespace fallguyloadr
         MPGNetObject netObject;
         CheckpointManager checkpointManager;
         MotorFunctionMovement movement;
-        ClientGameManager cgm;
         bool qualified;
 
         void Start()
@@ -46,8 +47,6 @@ namespace fallguyloadr
             netObject = GetComponent<MPGNetObject>();
             checkpointManager = FindObjectOfType<CheckpointManager>();
             movement = motorAgent.GetMotorFunction<MotorFunctionMovement>();
-
-            GlobalGameStateClient.Instance.GameStateView.GetLiveClientGameManager(out cgm);
 
             MotorFunctionPowerup motorFunctionPowerup = motorAgent.GetMotorFunction<MotorFunctionPowerup>();
 
@@ -93,6 +92,19 @@ namespace fallguyloadr
             {
                 LoaderBehaviour.instance.Respawn(checkpointManager);
             }
+
+            if (LoaderBehaviour.instance.canLoadLevel)
+            {
+                if (Input.GetKeyDown(KeyCode.O))
+                {
+                    StopPlayingReplay();
+                }
+
+                if (Input.GetKeyDown(KeyCode.P))
+                {
+                    StopRecording(true);
+                }
+            }
         }
 
         void FixedUpdate()
@@ -103,9 +115,7 @@ namespace fallguyloadr
                 {
                     if (positions.Count-1 < playingIndex | rotations.Count-1 < playingIndex)
                     {
-                        ReplayManager.Instance.StopPlayingReplay();
-                        positions.Clear();
-                        rotations.Clear();
+                        StopPlayingReplay();
                         return;
                     }
 
@@ -125,8 +135,18 @@ namespace fallguyloadr
             }
         }
 
+        void StopPlayingReplay()
+        {
+            ReplayManager.Instance.StopPlayingReplay();
+            positions.Clear();
+            rotations.Clear();
+            movement.SetDesiredLean(0);
+            motorAgent.Animator.SetBool(new HashedAnimatorString("Moving"), false);
+        }
+
         void SetV11Physics()
         {
+            usingV11Physics = true;
             CharacterControllerData data = fallGuysCharacter._data;
             data.aerialTurnSpeed = 8;
             data.getUpJumpInterruptTime = 0.1f;
@@ -147,10 +167,13 @@ namespace fallguyloadr
 
         public void StopRecording(bool save)
         {
-            ReplayManager.Instance.startPlaying = false;
-            if (save)
+            if (ReplayManager.Instance.currentReplay == null)
             {
-                ReplayManager.SaveReplay(positions.ToArray(), rotations.ToArray());
+                ReplayManager.Instance.startPlaying = false;
+                if (save)
+                {
+                    ReplayManager.SaveReplay(positions.ToArray(), rotations.ToArray());
+                }
             }
         }
 
@@ -171,12 +194,10 @@ namespace fallguyloadr
             if ((endZoneVFXTrigger != null || objectiveReachEndZone != null) && !qualified)
             {
                 qualified = true;
-                if (ReplayManager.Instance.currentReplay == null)
-                {
-                    StopRecording(true);
-                }
 
-                Qualify();
+                StopRecording(true);
+
+                Qualify(false);
             }
 
             if (collectable != null)
@@ -207,13 +228,28 @@ namespace fallguyloadr
             respawningTile.OnTriggerRespawnRoutine();
         }
 
-        void Qualify()
+        public void Qualify(bool win)
         {
-            Action action = RoundOver;
+            void SwitchToVictoryScreen()
+            {
+                GlobalGameStateClient.Instance.SwitchToVictoryScreen(0);
+            }
 
             GlobalGameStateClient.Instance.GameStateView.GetLiveClientGameManager(out ClientGameManager cgm);
             cgm._musicInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-            QualifiedScreenViewModel.Show("Qualified", action);
+
+            if (win)
+            {
+                Action action = SwitchToVictoryScreen;
+                WinnerScreenViewModel.Show("winner", true, action);
+            }
+            else
+            {
+                Action action = RoundOver;
+
+                QualifiedScreenViewModel.Show("qualified", action);
+            }
+
             AudioManager.PlayGameplayEndAudio(true);
         }
 

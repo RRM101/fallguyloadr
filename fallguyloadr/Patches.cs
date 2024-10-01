@@ -218,5 +218,17 @@ namespace fallguyloadr
             ReplayManager.Instance.StopPlayingReplay();
             return true;
         }
+
+        [HarmonyPatch(typeof(MotorFunctionGrabStateGrabCrown), "Begin")]
+        [HarmonyPostfix]
+        static void MotorFunctionGrabStateGrabCrown(MotorFunctionGrabStateGrabCrown __instance)
+        {
+            if (LoaderBehaviour.instance.fallguy != null)
+            {
+                FallGuyBehaviour fallguy = LoaderBehaviour.instance.fallguy.GetComponent<FallGuyBehaviour>();
+                fallguy.Qualify(true);
+                fallguy.StopRecording(true);
+            }
+        }
     }
 }

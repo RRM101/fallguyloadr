@@ -57,11 +57,16 @@ namespace fallguyloadr
                 currentReplayCalculatedChecksum = CalculateReplayChecksum(replay);
                 LoaderBehaviour.instance.LoadRound(currentReplay.RoundID, currentReplay.Seed);
                 FGChaos.Plugin.tempDisable = true;
+                Plugin.Logs.LogInfo("Playing replay");
             }
         }
 
         public void StopPlayingReplay()
         {
+            if (currentReplay != null)
+            {
+                Plugin.Logs.LogInfo("Stopping replay");
+            }
             startPlaying = false;
             SetUIState(false);
             currentReplay = null;
@@ -135,7 +140,7 @@ namespace fallguyloadr
                 replay.Version = Plugin.version;
                 replay.Seed = LoaderBehaviour.seed;
                 replay.RoundID = NetworkGameData.currentGameOptions_._roundID;
-                replay.UsingV11Physics = Plugin.UseV11CharacterPhysics.Value;
+                replay.UsingV11Physics = FallGuyBehaviour.usingV11Physics;
                 replay.UsingFGChaos = FGChaos.ChaosPluginBehaviour.chaosInstance != null;
                 replay.Positions = positions;
                 replay.Rotations = rotations;

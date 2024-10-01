@@ -108,6 +108,7 @@ namespace fallguyloadr.UI
             if (index > 0)
             {
                 selectedReplay = JsonSerializer.Deserialize<Replay>(File.ReadAllText($"{Paths.PluginPath}/fallguyloadr/Replays/{Replays[index]}.json"));
+                Plugin.Logs.LogInfo($"Selected replay: {Replays[index]}");
             }
             else
             {
