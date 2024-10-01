@@ -25,7 +25,7 @@ namespace fallguyloadr
 {
     public class FallGuyBehaviour : MonoBehaviour
     {
-        List<Vector3> positons = new();
+        List<Vector3> positions = new();
         List<Quaternion> rotations = new();
         int playingIndex;
 
@@ -68,14 +68,14 @@ namespace fallguyloadr
                 Replay replay = ReplayManager.Instance.currentReplay;
                 foreach (float[] position in replay.Positions)
                 {
-                    positons.Add(new Vector3(position[0], position[1], position[2]));
+                    positions.Add(new Vector3(position[0], position[1], position[2]));
                 }
 
                 foreach (float[] rotation in replay.Rotations)
                 {
                     rotations.Add(new Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]));
                 }
-                transform.position = positons[0];
+                transform.position = positions[0];
             }
         }
 
@@ -101,16 +101,16 @@ namespace fallguyloadr
             {
                 if (ReplayManager.Instance.currentReplay != null)
                 {
-                    if (positons.Count-1 < playingIndex | rotations.Count-1 < playingIndex)
+                    if (positions.Count-1 < playingIndex | rotations.Count-1 < playingIndex)
                     {
                         ReplayManager.Instance.StopPlayingReplay();
-                        positons.Clear();
+                        positions.Clear();
                         rotations.Clear();
                         return;
                     }
 
                     rb.velocity = Vector3.zero;
-                    transform.position = positons[playingIndex];
+                    transform.position = positions[playingIndex];
                     transform.rotation = rotations[playingIndex];
                     fallGuysCharacter.SetDesiredRotation(rotations[playingIndex]);
                     motorAgent.Animator.SetBool(new HashedAnimatorString("Moving"), true);
@@ -119,7 +119,7 @@ namespace fallguyloadr
                 }
                 else
                 {
-                    positons.Add(transform.position);
+                    positions.Add(transform.position);
                     rotations.Add(transform.rotation);
                 }
             }
@@ -150,41 +150,8 @@ namespace fallguyloadr
             ReplayManager.Instance.startPlaying = false;
             if (save)
             {
-                List<float[]> positionsList = new();
-                List<float[]> rotationsList = new();
-
-                foreach (Vector3 position in positons)
-                {
-                    positionsList.Add(new float[] {position.x, position.y, position.z});
-                }
-
-                foreach (Quaternion rotation in rotations)
-                {
-                    rotationsList.Add(new float[] { rotation.x, rotation.y, rotation.z, rotation.w });
-                }
-
-                Replay replay = new Replay();
-                replay.Version = Plugin.version;
-                replay.Seed = LoaderBehaviour.seed;
-                replay.RoundID = NetworkGameData.currentGameOptions_._roundID;
-                replay.UsingV11Physics = Plugin.UseV11CharacterPhysics.Value;
-                replay.UsingFGChaos = FGChaos.ChaosPluginBehaviour.chaosInstance != null;
-                replay.Positions = positionsList.ToArray();
-                replay.Rotations = rotationsList.ToArray();
-                replay.Checksum = ReplayManager.CalculateReplayChecksum(replay);
-
-                string replayJson = JsonSerializer.Serialize<Replay>(replay);
-
-                string datetime = $"{DateTime.Now.Day}-{DateTime.Now.Month}-{DateTime.Now.Year} {DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}";
-
-                File.WriteAllText($"{Paths.PluginPath}/fallguyloadr/Replays/{RemoveIndentation(CMSLoader.Instance.CMSData.Rounds[NetworkGameData.currentGameOptions_._roundID].DisplayName.Text)} - {datetime}.json", replayJson);
+                ReplayManager.SaveReplay(positions.ToArray(), rotations.ToArray());
             }
-        }
-
-        string RemoveIndentation(string inputString)
-        {
-            string noTagsString = Regex.Replace(inputString, "<.*?>", string.Empty);
-            return Regex.Replace(noTagsString, " {2,}", " ");
         }
 
         void OnTriggerEnter(Collider other)

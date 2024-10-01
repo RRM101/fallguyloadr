@@ -9,6 +9,12 @@ using fallguyloadr.JSON;
 using System.Text.Json;
 using System.Security.Cryptography;
 using UnityEngine;
+using BepInEx;
+using FG.Common.CMS;
+using FG.Common;
+using System.IO;
+using System.Text.RegularExpressions;
+using Il2CppSystem.Xml.Schema;
 
 namespace fallguyloadr
 {
@@ -93,6 +99,65 @@ namespace fallguyloadr
                     cgm._inGameUiManager._switchableView.SetViewVisibility(2, true);
                     cgm._inGameUiManager._switchableView.SetViewVisibility(4, false);
                 }
+            }
+        }
+
+        static string RemoveIndentation(string inputString)
+        {
+            string noTagsString = Regex.Replace(inputString, "<.*?>", string.Empty);
+            return Regex.Replace(noTagsString, " {2,}", " ");
+        }
+
+        public static void SaveReplay(Vector3[] positions_, Quaternion[] rotations_)
+        {
+            string datetime = $"{DateTime.Now.Day}-{DateTime.Now.Month}-{DateTime.Now.Year} {DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}";
+            string filepath = $"{Paths.PluginPath}/fallguyloadr/Replays/{RemoveIndentation(CMSLoader.Instance.CMSData.Rounds[NetworkGameData.currentGameOptions_._roundID].DisplayName.Text)} - {datetime}.json";
+
+            if (!File.Exists(filepath))
+            {
+                float[][] positions = new float[positions_.Length][];
+                float[][] rotations = new float[rotations_.Length][];
+                //List<float[]> rotationsList = new();
+
+                for (int i = 0; i < positions_.Length; i++)
+                {
+                    Vector3 position = positions_[i];
+                    positions[i] = new float[] { position.x, position.y, position.z };
+                }
+
+                for (int i = 0; i < rotations_.Length; i++)
+                {
+                    Quaternion rotation = rotations_[i];
+                    rotations[i] = new float[] { rotation.x, rotation.y, rotation.z, rotation.w };
+                }
+
+                Replay replay = new Replay();
+                replay.Version = Plugin.version;
+                replay.Seed = LoaderBehaviour.seed;
+                replay.RoundID = NetworkGameData.currentGameOptions_._roundID;
+                replay.UsingV11Physics = Plugin.UseV11CharacterPhysics.Value;
+                replay.UsingFGChaos = FGChaos.ChaosPluginBehaviour.chaosInstance != null;
+                replay.Positions = positions;
+                replay.Rotations = rotations;
+                replay.Checksum = CalculateReplayChecksum(replay);
+
+                string replayJson = JsonSerializer.Serialize<Replay>(replay);
+
+                File.WriteAllText(filepath, replayJson);
+            }
+            else
+            {
+                Plugin.Logs.LogError($"Could not save replay, \"{filepath}\" exists.");
+                ModalMessageData modalMessageData = new ModalMessageData()
+                {
+                    Title = "fallguyloadr - Replay",
+                    Message = $"Could not save Replay because a file with the same name exists.",
+                    LocaliseTitle = UIModalMessage.LocaliseOption.NotLocalised,
+                    LocaliseMessage = UIModalMessage.LocaliseOption.NotLocalised,
+                    ModalType = UIModalMessage.ModalType.MT_BLOCKING,
+                };
+
+                PopupManager.Instance.Show(PopupInteractionType.Error, modalMessageData);
             }
         }
 
