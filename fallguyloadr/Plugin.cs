@@ -652,24 +652,6 @@ namespace fallguyloadr
                     MainMenuManager mainMenuManager = GameObject.FindObjectOfType<MainMenuManager>();
                     mainMenuManager.StopMusic();
                 }
-
-                /*if (!File.Exists($"{Paths.PluginPath}/fallguyloadr/Themes/{currentTheme.Music}"))
-                {
-                    if (SceneManager.GetActiveScene().name == "MainMenu")
-                    {
-                        MainMenuManager mainMenuManager = GameObject.FindObjectOfType<MainMenuManager>();
-                        mainMenuManager.StopMusic();
-                    }
-                    Plugin.Logs.LogInfo("Theme Music File does not exist, unpatching...");
-                    if (Harmony.HasAnyPatches("ThemePatches"))
-                    {
-                        Harmony.UnpatchID("ThemePatches");
-                    }
-                    else
-                    {
-                        Plugin.Logs.LogInfo("Already unpatched");
-                    }
-                }*/
             }
             else
             {
