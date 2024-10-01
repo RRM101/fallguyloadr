@@ -56,7 +56,7 @@ namespace fallguyloadr.UI
         Image gradient;
         Image image;
 
-        ThemeReloadType themeReloadType = ThemeReloadType.Nothing;
+        //ThemeReloadType themeReloadType = ThemeReloadType.Nothing;
 
         protected override void ConstructPanelContent()
         {
@@ -124,19 +124,19 @@ namespace fallguyloadr.UI
                 if (pickedThemeName != "Default" && Plugin.Theme.Value != "Default")
                 {
                     Plugin.Theme.Value = pickedThemeName + ".json";
-                    themeReloadType = Harmony.HasAnyPatches("ThemePatches") ? ThemeReloadType.Nothing : ThemeReloadType.Patch;
+                    //themeReloadType = Harmony.HasAnyPatches("ThemePatches") ? ThemeReloadType.Nothing : ThemeReloadType.Patch;
                 }
                 else if (Plugin.Theme.Value == "Default")
                 {
                     Plugin.Theme.Value = pickedThemeName + ".json";
                     //Harmony.CreateAndPatchAll(typeof(ThemePatches), "ThemePatches");
-                    themeReloadType = ThemeReloadType.Patch;
+                    //themeReloadType = ThemeReloadType.Patch;
                 }
                 else
                 {
                     Plugin.Theme.Value = "Default";
                     //Harmony.UnpatchID("ThemePatches");
-                    themeReloadType = ThemeReloadType.Unpatch;
+                    //themeReloadType = ThemeReloadType.Unpatch;
                 }
 
                 ModalMessageData modalMessageData = new ModalMessageData()
@@ -190,8 +190,7 @@ namespace fallguyloadr.UI
                     GameObject background = GameObject.Find("Generic_UI_SeasonS10Background_Canvas_Variant");
                     LoaderBehaviour.instance.SetTheme(LoaderBehaviour.instance.currentTheme, background);
                 }
-
-                switch (themeReloadType)
+                /*switch (themeReloadType)
                 {
                     case ThemeReloadType.Patch:
                         mainMenuManager.StopMusic();
@@ -201,7 +200,7 @@ namespace fallguyloadr.UI
                         mainMenuManager.StopMusic();
                         Harmony.UnpatchID("ThemePatches");
                         break;
-                }
+                }*/
             }
 
 

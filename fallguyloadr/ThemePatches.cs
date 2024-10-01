@@ -1,7 +1,9 @@
-﻿using FGClient;
+﻿using BepInEx;
+using FGClient;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +16,10 @@ namespace fallguyloadr
         [HarmonyPrefix]
         static bool MainMenuManagerAwake(MainMenuManager __instance)
         {
-            __instance.gameObject.AddComponent<MainMenuCustomAudio>();
+            if (File.Exists($"{Paths.PluginPath}/fallguyloadr/Themes/{LoaderBehaviour.instance.currentTheme.Music}") && Plugin.Theme.Value != "Default")
+            {
+                __instance.gameObject.AddComponent<MainMenuCustomAudio>();
+            }
 
             return true;
         }
@@ -23,17 +28,26 @@ namespace fallguyloadr
         [HarmonyPrefix]
         static bool MainMenuManagerPlayMusic(MainMenuManager __instance)
         {
-            __instance.GetComponent<MainMenuCustomAudio>().PlayMusic();
-            return false;
+            MainMenuCustomAudio mainMenuCustomAudio = __instance.GetComponent<MainMenuCustomAudio>();
+            if (mainMenuCustomAudio != null)
+            {
+                mainMenuCustomAudio.PlayMusic();
+                return false;
+            }
+            return true;
         }
 
         [HarmonyPatch(typeof(MainMenuManager), "ResumeMusic")]
         [HarmonyPrefix]
         static bool MainMenuManagerResume(MainMenuManager __instance)
         {
-            __instance.GetComponent<MainMenuCustomAudio>().waveOut.Play();
-
-            return false;
+            MainMenuCustomAudio mainMenuCustomAudio = __instance.GetComponent<MainMenuCustomAudio>();
+            if (mainMenuCustomAudio != null)
+            {
+                mainMenuCustomAudio.waveOut.Play();
+                return false;
+            }
+            return true;
         }
 
         [HarmonyPatch(typeof(MainMenuManager), "StopMusic")]
@@ -49,9 +63,9 @@ namespace fallguyloadr
                     mainMenuCustomAudio.stop = true;
                     mainMenuCustomAudio.waveOut.Dispose();
                 }
+                return false;
             }
-
-            return false;
+            return true;
         }
     }
 }

@@ -91,7 +91,7 @@ namespace fallguyloadr
     {
         public static LoaderBehaviour instance;
         public static int seed = DateTime.Now.Millisecond;
-        public Theme currentTheme = JsonSerializer.Deserialize<Theme>(File.ReadAllText($"{Paths.PluginPath}/fallguyloadr/Themes/Season7_Theme.json"));
+        public Theme currentTheme = JsonSerializer.Deserialize<Theme>(File.ReadAllText($"{Paths.PluginPath}/fallguyloadr/Themes/Season10_Theme.json"));
         public FallGuysCharacterController fallguy;
         StateGameLoading gameLoading;
         public MPGNetObject netObject;
@@ -647,7 +647,13 @@ namespace fallguyloadr
                     }
                 }
 
-                if (!File.Exists($"{Paths.PluginPath}/fallguyloadr/Themes/{currentTheme.Music}"))
+                if (SceneManager.GetActiveScene().name == "MainMenu")
+                {
+                    MainMenuManager mainMenuManager = GameObject.FindObjectOfType<MainMenuManager>();
+                    mainMenuManager.StopMusic();
+                }
+
+                /*if (!File.Exists($"{Paths.PluginPath}/fallguyloadr/Themes/{currentTheme.Music}"))
                 {
                     if (SceneManager.GetActiveScene().name == "MainMenu")
                     {
@@ -655,8 +661,15 @@ namespace fallguyloadr
                         mainMenuManager.StopMusic();
                     }
                     Plugin.Logs.LogInfo("Theme Music File does not exist, unpatching...");
-                    Harmony.UnpatchID("ThemePatches");
-                }
+                    if (Harmony.HasAnyPatches("ThemePatches"))
+                    {
+                        Harmony.UnpatchID("ThemePatches");
+                    }
+                    else
+                    {
+                        Plugin.Logs.LogInfo("Already unpatched");
+                    }
+                }*/
             }
             else
             {
