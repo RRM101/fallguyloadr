@@ -15,11 +15,6 @@ using Levels.ScoreZone;
 using fallguyloadr.UI;
 using System.Collections.Generic;
 using fallguyloadr.JSON;
-using System.Text.Json;
-using System.IO;
-using BepInEx;
-using FG.Common.CMS;
-using System.Text.RegularExpressions;
 
 namespace fallguyloadr
 {
