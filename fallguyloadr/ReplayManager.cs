@@ -1,20 +1,15 @@
 ﻿using FGClient.UI;
 using FGClient;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using fallguyloadr.JSON;
 using System.Text.Json;
 using System.Security.Cryptography;
 using UnityEngine;
-using BepInEx;
 using FG.Common.CMS;
 using FG.Common;
 using System.IO;
 using System.Text.RegularExpressions;
-using Il2CppSystem.Xml.Schema;
 
 namespace fallguyloadr
 {
@@ -116,7 +111,7 @@ namespace fallguyloadr
         public static void SaveReplay(Vector3[] positions_, Quaternion[] rotations_)
         {
             string datetime = $"{DateTime.Now.Day}-{DateTime.Now.Month}-{DateTime.Now.Year} {DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}";
-            string filepath = $"{Paths.PluginPath}/fallguyloadr/Replays/{RemoveIndentation(CMSLoader.Instance.CMSData.Rounds[NetworkGameData.currentGameOptions_._roundID].DisplayName.Text)} - {datetime}.json";
+            string filepath = $"{Plugin.GetModFolder()}/Replays/{RemoveIndentation(CMSLoader.Instance.CMSData.Rounds[NetworkGameData.currentGameOptions_._roundID].DisplayName.Text)} - {datetime}.json";
 
             if (!File.Exists(filepath))
             {

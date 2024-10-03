@@ -74,11 +74,7 @@ namespace fallguyloadr
             Harmony.CreateAndPatchAll(typeof(Patches));
             Harmony.CreateAndPatchAll(typeof(IsGameServerPatches));
             Harmony.CreateAndPatchAll(typeof(CosmeticsPatches));
-
-            if (Theme.Value != "Default")
-            {
-                Harmony.CreateAndPatchAll(typeof(ThemePatches), "ThemePatches");
-            }
+            Harmony.CreateAndPatchAll(typeof(ThemePatches), "ThemePatches");
 
             GameObject obj = new GameObject("Loader Behaviour");
             GameObject.DontDestroyOnLoad(obj);
@@ -87,20 +83,25 @@ namespace fallguyloadr
 
             Log.LogInfo($"Plugin fallguy loadr is loaded!");            
         }
+
+        public static string GetModFolder()
+        {
+            // idiot protection
+            return Directory.Exists($"{Paths.PluginPath}/fallguyloadr/fallguyloadr") ? $"{Paths.PluginPath}/fallguyloadr/fallguyloadr" : $"{Paths.PluginPath}/fallguyloadr";
+        }
     }
 
     public class LoaderManager : MonoBehaviour
     {
         public static LoaderManager instance;
         public static int seed = DateTime.Now.Millisecond;
-        public Theme currentTheme = JsonSerializer.Deserialize<Theme>(File.ReadAllText($"{Paths.PluginPath}/fallguyloadr/Themes/Season10_Theme.json"));
+        public Theme currentTheme = Plugin.Theme.Value != "Default" ? JsonSerializer.Deserialize<Theme>(File.ReadAllText($"{Plugin.GetModFolder()}/Themes/{Plugin.Theme.Value}")) : JsonSerializer.Deserialize<Theme>(File.ReadAllText($"{Plugin.GetModFolder()}/Themes/Season10_Theme.json")); // spaghetti code
         public FallGuysCharacterController fallguy;
         StateGameLoading gameLoading;
         public MPGNetObject netObject;
         public ClientGameManager cgm;
         UIBase UI;
         public bool canLoadLevel = true;
-        //public Replay currentReplay;
 
         void Awake()
         {
@@ -635,9 +636,9 @@ namespace fallguyloadr
 
         public void LoadTheme()
         {
-            if (File.Exists($"{Paths.PluginPath}/fallguyloadr/Themes/{Plugin.Theme.Value}"))
+            if (File.Exists($"{Plugin.GetModFolder()}/Themes/{Plugin.Theme.Value}"))
             {
-                string themeString = File.ReadAllText($"{Paths.PluginPath}/fallguyloadr/Themes/{Plugin.Theme.Value}");
+                string themeString = File.ReadAllText($"{Plugin.GetModFolder()}/Themes/{Plugin.Theme.Value}");
                 currentTheme = JsonSerializer.Deserialize<Theme>(themeString);
 
                 LoadingGameScreenViewModel[] loadingGameScreens = Resources.FindObjectsOfTypeAll<LoadingGameScreenViewModel>();
@@ -663,7 +664,7 @@ namespace fallguyloadr
 
         public void SetTheme(Theme theme, GameObject gameObject)
         {
-            Sprite pattern = PNGtoSprite($"{Paths.PluginPath}/fallguyloadr/Themes/{theme.Pattern}");
+            Sprite pattern = PNGtoSprite($"{Plugin.GetModFolder()}/Themes/{theme.Pattern}");
             Transform mask = gameObject.transform.GetChild(1);
 
             if (theme.UpperGradientRGBA != null)

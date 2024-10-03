@@ -31,7 +31,7 @@ namespace fallguyloadr.UI
 
         public static ThemeSelector instance;
 
-        Sprite patternSprite = LoaderManager.PNGtoSprite($"{Paths.PluginPath}/fallguyloadr/Themes/{LoaderManager.instance.currentTheme.Pattern}");
+        Sprite patternSprite = LoaderManager.PNGtoSprite($"{Plugin.GetModFolder()}/Themes/{LoaderManager.instance.currentTheme.Pattern}");
         Sprite linearGraidentImage;
 
         public override string Name => "Theme Selector";
@@ -72,7 +72,7 @@ namespace fallguyloadr.UI
             UIFactory.SetLayoutElement(themesDropdown.gameObject, 150, 25, 0, 0);
 
             themes.Add("Default");
-            string[] fileNames = Directory.GetFiles($"{Paths.PluginPath}/fallguyloadr/Themes");
+            string[] fileNames = Directory.GetFiles($"{Plugin.GetModFolder()}/Themes");
             foreach (string fileName in fileNames)
             {
                 if (fileName.EndsWith(".json"))
@@ -185,7 +185,7 @@ namespace fallguyloadr.UI
             pickedThemeName = themes[index];
             if (pickedThemeName != "Default")
             {
-                string themeString = File.ReadAllText($"{Paths.PluginPath}/fallguyloadr/Themes/{pickedThemeName}.json");
+                string themeString = File.ReadAllText($"{Plugin.GetModFolder()}/Themes/{pickedThemeName}.json");
 
                 pickedTheme = JsonSerializer.Deserialize<Theme>(themeString);
                 SetTheme(pickedTheme);
@@ -197,7 +197,7 @@ namespace fallguyloadr.UI
             bgRow.GetComponent<Image>().color = new Color(theme.UpperGradientRGBA[0], theme.UpperGradientRGBA[1], theme.UpperGradientRGBA[2], theme.UpperGradientRGBA[3]);
             gradient.color = new Color(theme.LowerGradientRGBA[0], theme.LowerGradientRGBA[1], theme.LowerGradientRGBA[2], theme.LowerGradientRGBA[3]);
             image.color = new Color(theme.CirclesRGBA[0], theme.CirclesRGBA[1], theme.CirclesRGBA[2], theme.CirclesRGBA[3]);
-            patternSprite = LoaderManager.PNGtoSprite($"{Paths.PluginPath}/fallguyloadr/Themes/{theme.Pattern}");
+            patternSprite = LoaderManager.PNGtoSprite($"{Plugin.GetModFolder()}/Themes/{theme.Pattern}");
             image.sprite = patternSprite;
         }
     }

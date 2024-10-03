@@ -90,7 +90,7 @@ namespace fallguyloadr.UI
             Replays.Clear();
             Replays.Add("Select a Replay");
 
-            string[] fileNames = Directory.GetFiles($"{Paths.PluginPath}/fallguyloadr/Replays");
+            string[] fileNames = Directory.GetFiles($"{Plugin.GetModFolder()}/Replays");
             foreach (string fileName in fileNames)
             {
                 if (fileName.EndsWith(".json"))
@@ -107,7 +107,7 @@ namespace fallguyloadr.UI
         {
             if (index > 0)
             {
-                selectedReplay = JsonSerializer.Deserialize<Replay>(File.ReadAllText($"{Paths.PluginPath}/fallguyloadr/Replays/{Replays[index]}.json"));
+                selectedReplay = JsonSerializer.Deserialize<Replay>(File.ReadAllText($"{Plugin.GetModFolder()}/Replays/{Replays[index]}.json"));
                 Plugin.Logs.LogInfo($"Selected replay: {Replays[index]}");
             }
             else

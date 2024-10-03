@@ -16,9 +16,13 @@ namespace fallguyloadr
         [HarmonyPrefix]
         static bool MainMenuManagerAwake(MainMenuManager __instance)
         {
-            if (File.Exists($"{Paths.PluginPath}/fallguyloadr/Themes/{LoaderManager.instance.currentTheme.Music}") && Plugin.Theme.Value != "Default")
+            if (File.Exists($"{Plugin.GetModFolder()}/Themes/{LoaderManager.instance.currentTheme.Music}") && Plugin.Theme.Value != "Default")
             {
                 __instance.gameObject.AddComponent<MainMenuCustomAudio>();
+            }
+            else
+            {
+                Plugin.Logs.LogInfo("Playing default menu music");
             }
 
             return true;

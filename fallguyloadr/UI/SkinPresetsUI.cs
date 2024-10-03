@@ -187,7 +187,7 @@ namespace fallguyloadr.UI
         {
             Presets.Clear();
             Presets.Add("Choose a Preset");
-            string[] fileNames = Directory.GetFiles($"{Paths.PluginPath}/fallguyloadr/Presets");
+            string[] fileNames = Directory.GetFiles($"{Plugin.GetModFolder()}/Presets");
             foreach (string fileName in fileNames)
             {
                 if (fileName.EndsWith(".json"))
@@ -244,7 +244,7 @@ namespace fallguyloadr.UI
 
                 inputFieldText = inputFieldText.Length > 0 ? inputFieldText : "NoName";
 
-                File.WriteAllText($"{Paths.PluginPath}/fallguyloadr/Presets/{inputFieldText}.json", skinPresetJson);
+                File.WriteAllText($"{Plugin.GetModFolder()}/Presets/{inputFieldText}.json", skinPresetJson);
                 RefreshPresets();
                 SelectPreset(skinPreset, inputFieldText);
             }
@@ -275,7 +275,7 @@ namespace fallguyloadr.UI
         {
             if (index > 0)
             {
-                ReadPresetJson($"{Paths.PluginPath}/fallguyloadr/Presets/{Presets[index]}.json");
+                ReadPresetJson($"{Plugin.GetModFolder()}/Presets/{Presets[index]}.json");
             }
         }
 

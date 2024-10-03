@@ -187,7 +187,7 @@ namespace fallguyloadr
         [HarmonyPrefix]
         static bool GamefuelContentServiceGetCachePath(string filename, ref string __result)
         {
-            __result = $"{Paths.PluginPath}/fallguyloadr/Assets/{filename}.gdata";
+            __result = $"{Plugin.GetModFolder()}/Assets/{filename}.gdata";
             return false;
         }
 
