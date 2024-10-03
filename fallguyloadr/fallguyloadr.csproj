@@ -132,4 +132,8 @@
       <HintPath>C:\Users\rrm1\FallGuys10.8\BepinEx\interop\Wushu.LevelEditor.Runtime.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Replays\" />
+  </ItemGroup>
 </Project>

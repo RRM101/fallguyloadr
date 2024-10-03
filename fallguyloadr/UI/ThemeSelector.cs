@@ -71,17 +71,7 @@ namespace fallguyloadr.UI
             UIFactory.CreateDropdown(selectionRow, "Themes", out themesDropdown, "", 14, PickTheme);
             UIFactory.SetLayoutElement(themesDropdown.gameObject, 150, 25, 0, 0);
 
-            themes.Add("Default");
-            string[] fileNames = Directory.GetFiles($"{Plugin.GetModFolder()}/Themes");
-            foreach (string fileName in fileNames)
-            {
-                if (fileName.EndsWith(".json"))
-                {
-                    themes.Add(Path.GetFileNameWithoutExtension(fileName));
-                }
-            }
-
-            themesDropdown.AddOptions(themes);
+            RefreshThemes();
 
             ButtonRef selectButton = UIFactory.CreateButton(selectionRow, "Select Button", "Select");
             UIFactory.SetLayoutElement(selectButton.Component.gameObject, 100, 25, 0, 0);
@@ -101,6 +91,29 @@ namespace fallguyloadr.UI
             image.sprite = patternSprite;
             image.color = new Color(theme.CirclesRGBA[0], theme.CirclesRGBA[1], theme.CirclesRGBA[2], theme.CirclesRGBA[3]);
             UIFactory.SetLayoutElement(imageGameObject);
+        }
+
+        /*public override void Toggle()
+        {
+            RefreshThemes();
+            base.Toggle();
+        }*/
+
+        void RefreshThemes()
+        {
+            themes.Clear();
+            themes.Add("Default");
+            string[] fileNames = Directory.GetFiles($"{Plugin.GetModFolder()}/Themes");
+            foreach (string fileName in fileNames)
+            {
+                if (fileName.EndsWith(".json"))
+                {
+                    themes.Add(Path.GetFileNameWithoutExtension(fileName));
+                }
+            }
+
+            themesDropdown.ClearOptions();
+            themesDropdown.AddOptions(themes);
         }
 
         void SelectTheme()

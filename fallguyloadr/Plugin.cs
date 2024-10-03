@@ -60,7 +60,7 @@ namespace fallguyloadr
             DisablePowerUpUI = Config.Bind("Config", "Disable Power-Up UI", false, "Disables Power-Up UI.");
             Theme = Config.Bind("Config", "Theme", "Default", "Custom theme for the Main Menu and the Round Loading Screen.");
             CustomAudioVolume = Config.Bind("Config", "Custom Audio Volume", 50, "Volume for custom audio. (Max 100)");
-            UseV11CharacterPhysics = Config.Bind("Config", "Use 11.0 Physics", false, "Enables the physics changes made in Fall Guys versions 10.9 and 11.0");
+            UseV11CharacterPhysics = Config.Bind("Config", "Use V11 Physics", false, "Enables the physics changes made in Fall Guys versions 10.9 and 11.0");
 
             BepInEx.Logging.Logger.Sources.Add(Logs);
 
@@ -76,7 +76,7 @@ namespace fallguyloadr
             Harmony.CreateAndPatchAll(typeof(CosmeticsPatches));
             Harmony.CreateAndPatchAll(typeof(ThemePatches), "ThemePatches");
 
-            GameObject obj = new GameObject("Loader Behaviour");
+            GameObject obj = new GameObject("Loader Manager");
             GameObject.DontDestroyOnLoad(obj);
             obj.hideFlags = HideFlags.HideAndDontSave;
             obj.AddComponent<LoaderManager>();
@@ -103,6 +103,16 @@ namespace fallguyloadr
         UIBase UI;
         public bool canLoadLevel = true;
 
+        string[] importantModFiles = new string[]
+        {
+            "/Assets/content_v2.gdata",
+            "/Presets/Default.json",
+            "/Replays/placeholder",
+            "/Themes/Season10_Theme.json"
+        };
+        bool hasMissingFiles;
+        List<string> missingFilePaths;
+
         void Awake()
         {
             if (instance == null)
@@ -113,6 +123,8 @@ namespace fallguyloadr
             {
                 Destroy(this);
             }
+
+            CheckForMissingFiles();
 
             UniverseLib.Universe.Init(1, null, null, new()
             {
@@ -168,6 +180,11 @@ namespace fallguyloadr
 
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
+            if (scene.name == "MainMenu" && hasMissingFiles)
+            {
+                ShowMissingFilesPopup();
+            }
+
             if (!(scene.name.Contains("Fraggle") || scene.name.Contains("Editor")))
             {
                 if (scene.name.StartsWith("FallGuy_"))
@@ -202,6 +219,48 @@ namespace fallguyloadr
                     LoadBank("BNK_SFX_PowerUp_RollingBall");
                 }
             }
+        }
+
+        void CheckForMissingFiles()
+        {
+            foreach (string path in importantModFiles)
+            {
+                if (!File.Exists(Plugin.GetModFolder() + path))
+                {
+                    if (missingFilePaths == null)
+                    {
+                        missingFilePaths = new();
+                    }
+
+                    hasMissingFiles = true;
+                    missingFilePaths.Add(Plugin.GetModFolder() + path);
+                }
+            }
+        }
+
+        void ShowMissingFilesPopup()
+        {
+            void StupidMTBoolQuitGame(bool stupid)
+            {
+                Application.Quit();
+            }
+
+            Action<bool> stupid = StupidMTBoolQuitGame;
+
+            string missingFiles = string.Join("\n", missingFilePaths);
+            ModalMessageData modalMessageData = new ModalMessageData
+            {
+                Title = "fallguyloadr - Missing Files!",
+                Message = $"The Missing Files are:\n{missingFiles}\n<b>Make you sure you have placed the mod in the correct folder.</b>",
+                LocaliseTitle = UIModalMessage.LocaliseOption.NotLocalised,
+                LocaliseMessage = UIModalMessage.LocaliseOption.NotLocalised,
+                ModalType = UIModalMessage.ModalType.MT_BLOCKING,
+                OnCloseButtonPressed = stupid
+            };
+
+            Plugin.Logs.LogError("Missing Files!");
+
+            PopupManager.Instance.Show(PopupInteractionType.Error, modalMessageData);
         }
 
         public void FixObstacles()

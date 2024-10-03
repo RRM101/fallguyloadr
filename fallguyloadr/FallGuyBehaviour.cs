@@ -15,6 +15,7 @@ using Levels.ScoreZone;
 using fallguyloadr.UI;
 using System.Collections.Generic;
 using fallguyloadr.JSON;
+using System.IO;
 
 namespace fallguyloadr
 {
@@ -167,7 +168,14 @@ namespace fallguyloadr
                 ReplayManager.Instance.startPlaying = false;
                 if (save)
                 {
-                    ReplayManager.SaveReplay(positions.ToArray(), rotations.ToArray());
+                    try
+                    {
+                        ReplayManager.SaveReplay(positions.ToArray(), rotations.ToArray());
+                    }
+                    catch (Exception e)
+                    {
+                        Plugin.Logs.LogError($"Could not save replay: {e.GetType().Name}: {e.Message}\n\nStack Trace:\n{e.StackTrace}");
+                    }
                 }
             }
         }

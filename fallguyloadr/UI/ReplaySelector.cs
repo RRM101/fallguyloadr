@@ -138,7 +138,7 @@ namespace fallguyloadr.UI
                 replayDurationText.text = $"Duration: {durationText}";
                 replayRoundIDText.text = $"Round ID: {replay.RoundID}";
                 replaySeedText.text = $"Seed: {replay.Seed}";
-                replayPhysicsText.text = $"11.0 Physics: {replay.UsingV11Physics}";
+                replayPhysicsText.text = $"V11 Physics: {replay.UsingV11Physics}";
                 replayFGChaosText.text = $"FGChaos: {replay.UsingFGChaos}";
             }
             else
@@ -146,7 +146,7 @@ namespace fallguyloadr.UI
                 replayDurationText.text = "Duration:";
                 replayRoundIDText.text = "Round ID:";
                 replaySeedText.text = "Seed:";
-                replayPhysicsText.text = "11.0 Physics:";
+                replayPhysicsText.text = "V11 Physics:";
                 replayFGChaosText.text = "FGChaos:";
             }
         }

@@ -117,7 +117,6 @@ namespace fallguyloadr
             {
                 float[][] positions = new float[positions_.Length][];
                 float[][] rotations = new float[rotations_.Length][];
-                //List<float[]> rotationsList = new();
 
                 for (int i = 0; i < positions_.Length; i++)
                 {
