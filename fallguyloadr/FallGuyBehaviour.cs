@@ -85,10 +85,10 @@ namespace fallguyloadr
         {
             if (transform.position.y < -50 || Input.GetKeyDown(KeyCode.R))
             {
-                LoaderBehaviour.instance.Respawn(checkpointManager);
+                LoaderManager.instance.Respawn(checkpointManager);
             }
 
-            if (LoaderBehaviour.instance.canLoadLevel)
+            if (LoaderManager.instance.canLoadLevel)
             {
                 if (Input.GetKeyDown(KeyCode.O))
                 {

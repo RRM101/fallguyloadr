@@ -64,7 +64,7 @@ namespace fallguyloadr
 
             BepInEx.Logging.Logger.Sources.Add(Logs);
 
-            ClassInjector.RegisterTypeInIl2Cpp<LoaderBehaviour>();
+            ClassInjector.RegisterTypeInIl2Cpp<LoaderManager>();
             ClassInjector.RegisterTypeInIl2Cpp<FallGuyBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<Fixes.PixelPerfectBoardFix>();
             ClassInjector.RegisterTypeInIl2Cpp<Fixes.HoopsManagerReimplementation>();
@@ -83,15 +83,15 @@ namespace fallguyloadr
             GameObject obj = new GameObject("Loader Behaviour");
             GameObject.DontDestroyOnLoad(obj);
             obj.hideFlags = HideFlags.HideAndDontSave;
-            obj.AddComponent<LoaderBehaviour>();
+            obj.AddComponent<LoaderManager>();
 
             Log.LogInfo($"Plugin fallguy loadr is loaded!");            
         }
     }
 
-    public class LoaderBehaviour : MonoBehaviour
+    public class LoaderManager : MonoBehaviour
     {
-        public static LoaderBehaviour instance;
+        public static LoaderManager instance;
         public static int seed = DateTime.Now.Millisecond;
         public Theme currentTheme = JsonSerializer.Deserialize<Theme>(File.ReadAllText($"{Paths.PluginPath}/fallguyloadr/Themes/Season10_Theme.json"));
         public FallGuysCharacterController fallguy;

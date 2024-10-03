@@ -34,7 +34,7 @@ namespace fallguyloadr
         [HarmonyPrefix]
         static bool RoundRandomSeed(ClientGameStateView __instance, ref int __result)
         {
-            __result = LoaderBehaviour.seed;
+            __result = LoaderManager.seed;
             return false;
         }
 
@@ -42,16 +42,16 @@ namespace fallguyloadr
         [HarmonyPostfix]
         static void ClientGameManagerGameLevelLoaded(ClientGameManager __instance)
         {
-            __instance.SetupPlayerUpdateManagerAndRegister(LoaderBehaviour.instance.fallguy, true);
-            LoaderBehaviour.instance.fallguy.SetTeamID(1);
-            LoaderBehaviour.instance.fallguy.SpeedBoostManager.SetAuthority(true);
-            LoaderBehaviour.instance.fallguy.SpeedBoostManager.SetCharacterController(LoaderBehaviour.instance.fallguy);
-            CustomisationManager.Instance.ApplyCustomisationsToFallGuy(LoaderBehaviour.instance.fallguy.gameObject, GlobalGameStateClient.Instance.PlayerProfile.CustomisationSelections, -1);
+            __instance.SetupPlayerUpdateManagerAndRegister(LoaderManager.instance.fallguy, true);
+            LoaderManager.instance.fallguy.SetTeamID(1);
+            LoaderManager.instance.fallguy.SpeedBoostManager.SetAuthority(true);
+            LoaderManager.instance.fallguy.SpeedBoostManager.SetCharacterController(LoaderManager.instance.fallguy);
+            CustomisationManager.Instance.ApplyCustomisationsToFallGuy(LoaderManager.instance.fallguy.gameObject, GlobalGameStateClient.Instance.PlayerProfile.CustomisationSelections, -1);
 
             __instance._clientPlayerManager.ClearAllPlayers();
 
             NetworkPlayerDataClient networkPlayerDataClient = new NetworkPlayerDataClient();
-            networkPlayerDataClient.fgcc = LoaderBehaviour.instance.fallguy;
+            networkPlayerDataClient.fgcc = LoaderManager.instance.fallguy;
             networkPlayerDataClient.isLocalPlayer = true;
             networkPlayerDataClient.isParticipant = true;
             networkPlayerDataClient.TeamID = 1;
@@ -59,23 +59,23 @@ namespace fallguyloadr
             networkPlayerDataClient.platformID = "win";
             networkPlayerDataClient.partyId = "";
             networkPlayerDataClient.SquadID = 0;
-            networkPlayerDataClient.objectNetID = LoaderBehaviour.instance.netObject.NetID;
+            networkPlayerDataClient.objectNetID = LoaderManager.instance.netObject.NetID;
 
             PlayerMetadata playerMetadata = new PlayerMetadata(GlobalGameStateClient.Instance.PlayerProfile.CustomisationSelections, -1, "win_" + GlobalGameStateClient.Instance.PlayerProfile.PlatformAccountName, "win", true);
 
             __instance._clientPlayerManager._playerMetadata.Add(0, playerMetadata);
             __instance._clientPlayerManager._players.Add(networkPlayerDataClient);
             __instance._clientPlayerManager._playerIdIndex.Add(0, networkPlayerDataClient);
-            __instance._clientPlayerManager._playerNetIdIndex.Add(LoaderBehaviour.instance.netObject.NetID, networkPlayerDataClient);
+            __instance._clientPlayerManager._playerNetIdIndex.Add(LoaderManager.instance.netObject.NetID, networkPlayerDataClient);
             __instance._clientPlayerManager.LocalPlayer_ReadOnly = networkPlayerDataClient;
 
-            __instance.AddPlayerIdentification("win_"+GlobalGameStateClient.Instance.PlayerProfile.PlatformAccountName, "win", LoaderBehaviour.instance.fallguy, true, "", 0);
+            __instance.AddPlayerIdentification("win_"+GlobalGameStateClient.Instance.PlayerProfile.PlatformAccountName, "win", LoaderManager.instance.fallguy, true, "", 0);
 
-            __instance.AddPlayerCollidersToMap(LoaderBehaviour.instance.fallguy);
-            LoaderBehaviour.instance.StartRound();
+            __instance.AddPlayerCollidersToMap(LoaderManager.instance.fallguy);
+            LoaderManager.instance.StartRound();
 
-            __instance._trackPlayerSpawn(LoaderBehaviour.instance.netObject);
-            LoaderBehaviour.instance.FixObstaclesOnLevelLoad();
+            __instance._trackPlayerSpawn(LoaderManager.instance.netObject);
+            LoaderManager.instance.FixObstaclesOnLevelLoad();
         }
 
         [HarmonyPatch(typeof(AFKManager), "Start")]
@@ -98,9 +98,9 @@ namespace fallguyloadr
         [HarmonyPrefix]
         static bool ClientGameManagerOnIntroCountdownEnded(ClientGameManager __instance)
         {
-            LoaderBehaviour.instance.FixObstacles();
+            LoaderManager.instance.FixObstacles();
             ReplayManager.Instance.RoundStarted();
-            LoaderBehaviour.instance.canLoadLevel = true;
+            LoaderManager.instance.canLoadLevel = true;
             return true;
         }
 
@@ -134,7 +134,7 @@ namespace fallguyloadr
                 AudioManager.SetGlobalParam(AudioManager.EventMasterData.InGameMenuParam, 0);
                 GlobalGameStateClient.Instance._gameStateMachine.ReplaceCurrentState(new StateMainMenu(GlobalGameStateClient.Instance._gameStateMachine, GlobalGameStateClient.Instance.CreateClientGameStateData(), false).Cast<GameStateMachine.IGameState>());
                 ReplayManager.Instance.StopPlayingReplay();
-                LoaderBehaviour.instance.canLoadLevel = false;
+                LoaderManager.instance.canLoadLevel = false;
             }
             else
             {
@@ -147,14 +147,14 @@ namespace fallguyloadr
         [HarmonyPostfix]
         static void CMSLoaderInitItemsFromContent(CMSLoader __instance)
         {
-            LoaderBehaviour.instance.HandleCMSDataParsedEvent();
+            LoaderManager.instance.HandleCMSDataParsedEvent();
         }
 
         [HarmonyPatch(typeof(CatapultServicesManager), "OnLoginFailed")]
         [HarmonyPrefix]
         static bool CatapultServicesManagerOnLoginFailed()
         {
-            LoaderBehaviour.instance.Login();
+            LoaderManager.instance.Login();
             return false;
         }
 
@@ -223,9 +223,9 @@ namespace fallguyloadr
         [HarmonyPostfix]
         static void MotorFunctionGrabStateGrabCrown(MotorFunctionGrabStateGrabCrown __instance)
         {
-            if (LoaderBehaviour.instance.fallguy != null)
+            if (LoaderManager.instance.fallguy != null)
             {
-                FallGuyBehaviour fallguy = LoaderBehaviour.instance.fallguy.GetComponent<FallGuyBehaviour>();
+                FallGuyBehaviour fallguy = LoaderManager.instance.fallguy.GetComponent<FallGuyBehaviour>();
                 fallguy.Qualify(true);
                 fallguy.StopRecording(true);
             }

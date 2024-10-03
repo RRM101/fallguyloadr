@@ -31,12 +31,12 @@ namespace fallguyloadr.UI
 
         public static ThemeSelector instance;
 
-        Sprite patternSprite = LoaderBehaviour.PNGtoSprite($"{Paths.PluginPath}/fallguyloadr/Themes/{LoaderBehaviour.instance.currentTheme.Pattern}");
+        Sprite patternSprite = LoaderManager.PNGtoSprite($"{Paths.PluginPath}/fallguyloadr/Themes/{LoaderManager.instance.currentTheme.Pattern}");
         Sprite linearGraidentImage;
 
         public override string Name => "Theme Selector";
-        public override int MinWidth => (int)(LoaderBehaviour.instance.currentTheme != null ? patternSprite.rect.width * 2 + 6 : 260);
-        public override int MinHeight => (int)(LoaderBehaviour.instance.currentTheme != null ? patternSprite.rect.height + 54 : 310);
+        public override int MinWidth => (int)(LoaderManager.instance.currentTheme != null ? patternSprite.rect.width * 2 + 6 : 260);
+        public override int MinHeight => (int)(LoaderManager.instance.currentTheme != null ? patternSprite.rect.height + 54 : 310);
         public override Vector2 DefaultAnchorMin => new(0.25f, 0.25f);
         public override Vector2 DefaultAnchorMax => new(0.75f, 0.75f);
 
@@ -64,7 +64,7 @@ namespace fallguyloadr.UI
                 }
             }
 
-            Theme theme = LoaderBehaviour.instance.currentTheme;
+            Theme theme = LoaderManager.instance.currentTheme;
 
             GameObject selectionRow = UIFactory.CreateHorizontalGroup(ContentRoot, "Selection Row", true, false, true, true, 2, bgColor: new Color(0.07f, 0.07f, 0.07f, 1));
 
@@ -105,7 +105,7 @@ namespace fallguyloadr.UI
 
         void SelectTheme()
         {
-            if (LoaderBehaviour.instance.canLoadLevel && pickedThemeName != null)
+            if (LoaderManager.instance.canLoadLevel && pickedThemeName != null)
             {
                 Plugin.Logs.LogInfo($"Switching to theme {pickedThemeName} from {Plugin.Theme.Value}");
 
@@ -145,7 +145,7 @@ namespace fallguyloadr.UI
 
         void QuitPopup()
         {
-            LoaderBehaviour.instance.canLoadLevel = false;
+            LoaderManager.instance.canLoadLevel = false;
 
             Action<bool> action = Quit;
 
@@ -165,7 +165,7 @@ namespace fallguyloadr.UI
         void ReloadGame(bool wasOk)
         {
             GlobalGameStateClient.Instance.ForceMainMenuSceneReload = true;
-            LoaderBehaviour.instance.LoadTheme();
+            LoaderManager.instance.LoadTheme();
 
             if (SceneManager.GetActiveScene().name == "MainMenu")
             {
@@ -173,7 +173,7 @@ namespace fallguyloadr.UI
                 if (Plugin.Theme.Value != "Default")
                 {
                     GameObject background = GameObject.Find("Generic_UI_SeasonS10Background_Canvas_Variant");
-                    LoaderBehaviour.instance.SetTheme(LoaderBehaviour.instance.currentTheme, background);
+                    LoaderManager.instance.SetTheme(LoaderManager.instance.currentTheme, background);
                 }
             }
 
@@ -197,7 +197,7 @@ namespace fallguyloadr.UI
             bgRow.GetComponent<Image>().color = new Color(theme.UpperGradientRGBA[0], theme.UpperGradientRGBA[1], theme.UpperGradientRGBA[2], theme.UpperGradientRGBA[3]);
             gradient.color = new Color(theme.LowerGradientRGBA[0], theme.LowerGradientRGBA[1], theme.LowerGradientRGBA[2], theme.LowerGradientRGBA[3]);
             image.color = new Color(theme.CirclesRGBA[0], theme.CirclesRGBA[1], theme.CirclesRGBA[2], theme.CirclesRGBA[3]);
-            patternSprite = LoaderBehaviour.PNGtoSprite($"{Paths.PluginPath}/fallguyloadr/Themes/{theme.Pattern}");
+            patternSprite = LoaderManager.PNGtoSprite($"{Paths.PluginPath}/fallguyloadr/Themes/{theme.Pattern}");
             image.sprite = patternSprite;
         }
     }

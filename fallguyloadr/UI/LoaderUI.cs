@@ -113,7 +113,7 @@ namespace fallguyloadr.UI
                 if (variationsForSelectedRound != null)
                 {
                     ReplayManager.Instance.StopPlayingReplay();
-                    LoaderBehaviour.instance.LoadRound(variationsForSelectedRound[selectedVariationIndex]);
+                    LoaderManager.instance.LoadRound(variationsForSelectedRound[selectedVariationIndex]);
                 }
             };
 
@@ -204,7 +204,7 @@ namespace fallguyloadr.UI
         {
             ReplayManager.Instance.StopPlayingReplay();
             int randomRoundIndex = UnityEngine.Random.Range(0, usableRounds.Count);
-            LoaderBehaviour.instance.LoadRound(usableRounds[randomRoundIndex]);
+            LoaderManager.instance.LoadRound(usableRounds[randomRoundIndex]);
         }
 
         void SetDropdownRounds(Il2CppSystem.Collections.Generic.List<string> roundList)

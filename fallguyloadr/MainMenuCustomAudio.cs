@@ -31,7 +31,7 @@ namespace fallguyloadr
                 waveOut.Dispose();
             }
             waveOut = new WaveOutEvent();
-            string path = $"{Paths.PluginPath}/fallguyloadr/Themes/{LoaderBehaviour.instance.currentTheme.Music}";
+            string path = $"{Paths.PluginPath}/fallguyloadr/Themes/{LoaderManager.instance.currentTheme.Music}";
             string extension = Path.GetExtension(path);
             waveProvider = extension == ".wav" ? new WaveFileReader(path) : new Mp3FileReader(path);
             volumeWaveProvider = new VolumeWaveProvider16(waveProvider)
