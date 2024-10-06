@@ -26,7 +26,7 @@ namespace fallguyloadr.UI
 
         public static LoaderUI instance;
 
-        public override string Name => $"fallguyloadr v{Plugin.version} | Press F2 to Hide/Unhide";
+        public override string Name => $"fallguyloadr v{Plugin.version} | Press F4 for more info";
         public override int MinWidth => 800;
         public override int MinHeight => 145;
         public override Vector2 DefaultAnchorMin => new(0.25f, 0.25f);

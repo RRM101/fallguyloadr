@@ -36,7 +36,7 @@ using BepInEx.Logging;
 
 namespace fallguyloadr
 {
-    [BepInDependency("org.rrm1.fgchaos", "1.2.0")]
+    [BepInDependency("org.rrm1.fgchaos")]
     [BepInPlugin("org.rrm1.fallguyloadr", "fallguyloadr", version)]
     public class Plugin : BasePlugin
     {
@@ -152,6 +152,8 @@ namespace fallguyloadr
                 ThemeSelector.instance.SetActive(false);
                 new ReplaySelector(UI);
                 ReplaySelector.instance.SetActive(false);
+                new InfoPanel(UI);
+                InfoPanel.instance.SetActive(false);
                 new LoaderUI(UI);
                 UniverseLib.Config.ConfigManager.Force_Unlock_Mouse = false;
                 AddCMSStringKeys();
@@ -388,6 +390,11 @@ namespace fallguyloadr
             {
                 UI.Enabled = !UI.Enabled;
                 CursorManager.Instance.OnApplicationFocus(true);
+            }
+
+            if (Input.GetKeyDown(KeyCode.F4) && UI.Enabled)
+            {
+                InfoPanel.instance.Toggle();
             }
         }
 
@@ -681,7 +688,7 @@ namespace fallguyloadr
 
             ModalMessageData modalMessageData = new ModalMessageData()
             {
-                Title = "fallguyloadr - Themes",
+                Title = "Themes",
                 Message = $"The Theme you have selected ({Plugin.Theme.Value}) does not exist",
                 LocaliseTitle = UIModalMessage.LocaliseOption.NotLocalised,
                 LocaliseMessage = UIModalMessage.LocaliseOption.NotLocalised,

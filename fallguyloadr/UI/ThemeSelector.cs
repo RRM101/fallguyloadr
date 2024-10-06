@@ -139,7 +139,7 @@ namespace fallguyloadr.UI
 
                 ModalMessageData modalMessageData = new ModalMessageData()
                 {
-                    Title = "fallguyloadr - Theme Selector",
+                    Title = "Theme Selector",
                     Message = "The game will now reload to apply the changes.",
                     LocaliseTitle = UIModalMessage.LocaliseOption.NotLocalised,
                     LocaliseMessage = UIModalMessage.LocaliseOption.NotLocalised,
@@ -164,7 +164,7 @@ namespace fallguyloadr.UI
 
             ModalMessageData modalMessageData = new ModalMessageData()
             {
-                Title = "fallguyloadr - Theme Selector",
+                Title = "Theme Selector",
                 Message = "You will need to relaunch to game to apply the changes",
                 LocaliseTitle = UIModalMessage.LocaliseOption.NotLocalised,
                 LocaliseMessage = UIModalMessage.LocaliseOption.NotLocalised,

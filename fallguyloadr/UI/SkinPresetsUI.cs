@@ -208,7 +208,7 @@ namespace fallguyloadr.UI
 
             ModalMessageWithInputFieldData modalMessageData = new ModalMessageWithInputFieldData()
             {
-                Title = "fallguyloadr - SKIN PRESETS",
+                Title = "SKIN PRESETS",
                 Message = "Enter the name you want to give to the preset.",
                 LocaliseTitle = UIModalMessage.LocaliseOption.NotLocalised,
                 LocaliseMessage = UIModalMessage.LocaliseOption.NotLocalised,

@@ -149,7 +149,7 @@ namespace fallguyloadr
                 Plugin.Logs.LogError($"Could not save replay, \"{filepath}\" exists.");
                 ModalMessageData modalMessageData = new ModalMessageData()
                 {
-                    Title = "fallguyloadr - Replay",
+                    Title = "Replay",
                     Message = $"Could not save Replay because a file with the same name exists.",
                     LocaliseTitle = UIModalMessage.LocaliseOption.NotLocalised,
                     LocaliseMessage = UIModalMessage.LocaliseOption.NotLocalised,
