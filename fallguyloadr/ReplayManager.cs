@@ -143,6 +143,7 @@ namespace fallguyloadr
                 string replayJson = JsonSerializer.Serialize<Replay>(replay);
 
                 File.WriteAllText(filepath, replayJson);
+                Plugin.Logs.LogInfo("Saved Replay");
             }
             else
             {
@@ -153,7 +154,7 @@ namespace fallguyloadr
                     Message = $"Could not save Replay because a file with the same name exists.",
                     LocaliseTitle = UIModalMessage.LocaliseOption.NotLocalised,
                     LocaliseMessage = UIModalMessage.LocaliseOption.NotLocalised,
-                    ModalType = UIModalMessage.ModalType.MT_BLOCKING,
+                    ModalType = UIModalMessage.ModalType.MT_OK,
                 };
 
                 PopupManager.Instance.Show(PopupInteractionType.Error, modalMessageData);

@@ -51,6 +51,7 @@ namespace fallguyloadr
         public static ConfigEntry<string> Theme { get; set; }
         public static ConfigEntry<int> CustomAudioVolume { get; set; }
         public static ConfigEntry<bool> UseV11CharacterPhysics { get; set; }
+        public static ConfigEntry<bool> SaveReplays { get; set; }
 
         public override void Load()
         {
@@ -61,6 +62,7 @@ namespace fallguyloadr
             Theme = Config.Bind("Config", "Theme", "Default", "Custom theme for the Main Menu and the Round Loading Screen.");
             CustomAudioVolume = Config.Bind("Config", "Custom Audio Volume", 50, "Volume for custom audio. (Max 100)");
             UseV11CharacterPhysics = Config.Bind("Config", "Use V11 Physics", false, "Enables the physics changes made in Fall Guys versions 10.9 and 11.0");
+            SaveReplays = Config.Bind("Config", "Save Replays", true, "Saves Replays when you qualify or win.");
 
             BepInEx.Logging.Logger.Sources.Add(Logs);
 

@@ -34,6 +34,7 @@ namespace fallguyloadr
         CheckpointManager checkpointManager;
         MotorFunctionMovement movement;
         bool qualified;
+        bool wasReplaying;
 
         void Start()
         {
@@ -60,6 +61,7 @@ namespace fallguyloadr
 
             if (ReplayManager.Instance.currentReplay != null)
             {
+                wasReplaying = true;
                 Replay replay = ReplayManager.Instance.currentReplay;
                 foreach (float[] position in replay.Positions)
                 {
@@ -163,7 +165,7 @@ namespace fallguyloadr
 
         public void StopRecording(bool save)
         {
-            if (ReplayManager.Instance.currentReplay == null)
+            if (ReplayManager.Instance.currentReplay == null && !wasReplaying)
             {
                 ReplayManager.Instance.startPlaying = false;
                 if (save)
@@ -198,7 +200,8 @@ namespace fallguyloadr
             {
                 qualified = true;
 
-                StopRecording(true);
+                if (Plugin.SaveReplays.Value)
+                    StopRecording(true);
 
                 Qualify(false);
             }

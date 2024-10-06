@@ -227,7 +227,8 @@ namespace fallguyloadr
             {
                 FallGuyBehaviour fallguy = LoaderManager.instance.fallguy.GetComponent<FallGuyBehaviour>();
                 fallguy.Qualify(true);
-                fallguy.StopRecording(true);
+                if (Plugin.SaveReplays.Value)
+                    fallguy.StopRecording(true);
             }
         }
     }

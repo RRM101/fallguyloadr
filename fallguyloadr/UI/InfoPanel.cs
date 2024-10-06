@@ -25,12 +25,12 @@ namespace fallguyloadr.UI
 
         public override string Name => "Info";
         public override int MinWidth => 355;
-        public override int MinHeight => 275;
+        public override int MinHeight => 295;
         public override Vector2 DefaultAnchorMin => new(0.25f, 0.25f);
         public override Vector2 DefaultAnchorMax => new(0.75f, 0.75f);
         public override bool CanDragAndResize => true;
 
-        string InfoText = "FGChaos Keyboard Shortcuts:\nCtrl+L: Stop Chaos\nF1: Open Effect Options\nF3: Open Debug Menu\n\nfallguyloadr Keyboard Shortcuts:\nF2: Toggle UI\nO: Stop Playing Replay\nP: Save Recorded Replay";
+        string InfoText = "FGChaos Keyboard Shortcuts:\nCtrl+L: Stop Chaos\nF1: Open Effect Options\nF3: Open Debug Menu\n\nfallguyloadr Keyboard Shortcuts:\nF2: Toggle UI\nR: Respawn\nO: Stop Playing Replay\nP: Save Recorded Replay";
 
         protected override void ConstructPanelContent()
         {
